@@ -1,0 +1,10 @@
+SELECT a.name, p.title, p.year
+FROM paper_authors as pa
+JOIN authors as a
+ON pa.author_id = a.id
+JOIN papers as p
+ON pa.paper_id = p.id
+
+SELECT title, year, abstract
+FROM papers;
+
