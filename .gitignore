@@ -165,3 +165,4 @@ logs/*.log
 *.csv
 *.ipynb
 *.db
+*.pkl
