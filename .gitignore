@@ -161,6 +161,7 @@ cython_debug/
 
 # Data_source
 data_source
+chroma_storage
 logs/*.log
 *.csv
 *.ipynb
