@@ -1,6 +1,5 @@
 import arxiv
 import pandas as pd
-from IPython.display import display
 from dotenv import load_dotenv
 
 load_dotenv()
