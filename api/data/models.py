@@ -26,3 +26,11 @@ class Author_Paper(Base):
     id = Column(Integer, primary_key=True)
     author_id = Column(Integer, ForeignKey('Author.id'))
     paper_id = Column(Integer, ForeignKey('Paper.id'))
+
+
+class User(Base):
+    __tablename__ = "User"
+
+    id = Column(String(255), primary_key=True)
+    email = Column(String(255), nullable=False)
+    password = Column(String(60), nullable=False)
