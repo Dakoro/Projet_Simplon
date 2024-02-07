@@ -41,14 +41,16 @@ async def get_authors_batch(skip, limit, db: Session = Depends(get_db)):
 
 @app.get("/api/authors/{author_id}")
 async def get_author(author_id, db: Session = Depends(get_db)):
-    data = db.query(models.Author).filter(models.Author.id == author_id).first()
+    data = db.query(models.Author).filter(
+        models.Author.id == author_id).first()
     return data
 
 
 @app.post('/api/signup', summary="Create new user", response_model=UserOut)
 async def create_user(data: UserAuth, db: Session = Depends(get_db)):
     # querying database to check if user already exist
-    user = db.query(models.User).filter(models.User.email == data.email).first()
+    user = db.query(models.User).filter(
+        models.User.email == data.email).first()
     print(user)
     if user is not None:
         raise HTTPException(
@@ -72,9 +74,13 @@ async def create_user(data: UserAuth, db: Session = Depends(get_db)):
     return user
 
 
-@app.post('/api/login', summary="Create access and refresh tokens for user", response_model=TokenSchema)
-async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    user = db.query(models.User).filter(models.User.email == form_data.username).first()
+@app.post('/api/login',
+          summary="Create access and refresh tokens for user",
+          response_model=TokenSchema)
+async def login(form_data: OAuth2PasswordRequestForm = Depends(),
+                db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(
+        models.User.email == form_data.username).first()
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
