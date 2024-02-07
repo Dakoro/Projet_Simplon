@@ -22,3 +22,10 @@ CREATE TABLE Author_Paper (
   FOREIGN KEY (author_id) REFERENCES Author(id),
   FOREIGN KEY (paper_id) REFERENCES Paper(id)
 );
+
+-- Create User table for authentification
+CREATE TABLE User (
+  id VARCHAR(255) PRIMARY KEY,
+  email VARCHAR(255) NOT NULL,
+  password VARCHAR(60) NOT NULL
+);
