@@ -21,5 +21,8 @@ api_data: api/data/main.py
 	cd api/data && uvicorn main:app --reload
 
 api_model: api/model/main.py
-	cd api/model && uvicorn main:app --reload
+	cd api/model && uvicorn main:app --reload --port 8080
+
+run_app:
+	cd arxiv_app && ../$(PYTHON) manage.py runserver
 
