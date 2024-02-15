@@ -170,3 +170,9 @@ logs/*.log
 
 # models
 models
+
+# images
+imgs
+
+# Mlflow
+mlruns
