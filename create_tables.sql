@@ -10,7 +10,7 @@ CREATE TABLE Paper (
   id INTEGER PRIMARY KEY,
   year INTEGER,
   title VARCHAR(200),
-  source VARCHAR(5),
+  categories VARCHAR(20),
   abstract TEXT
 );
 
