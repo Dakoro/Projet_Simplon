@@ -18,7 +18,7 @@ def main():
         article_count,
         year,
         title,
-        source,
+        categories,
         abstract
     FROM Author_Paper as ap
         JOIN Author as a ON ap.author_id = a.id
@@ -32,7 +32,7 @@ def main():
         "article_count",
         "year",
         "title",
-        "source",
+        "categories",
         "abstract"
     ]
 

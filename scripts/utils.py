@@ -56,6 +56,7 @@ def load_arxiv_papers() -> pd.DataFrame:
         "title",
         "abstract",
         "version_1",
+        "categories"
     ]
 
     with open(ARXIV_URI, "r", encoding="utf-8") as jsf:
@@ -64,7 +65,8 @@ def load_arxiv_papers() -> pd.DataFrame:
             list_data = [
                 doc["title"],
                 doc["abstract"],
-                doc["versions"][0]["created"]]
+                doc["versions"][0]["created"],
+                doc['categories']]
             data.append(list_data)
     return pd.DataFrame(data=data, columns=cols)
 
