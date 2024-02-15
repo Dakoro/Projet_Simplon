@@ -8,11 +8,14 @@ setup:
 requirements: requirements.txt
 	$(VENV)/bin/pip freeze > requirements.txt
 
-create_and_load_bdd: bdd.db
+bdd: bdd.db
 	$(PYTHON) scripts/load_all.py
 
 dataset: aggreated_data.csv
 	$(PYTHON) scripts/get_data.py
+
+sample: sample.csv
+	$(PYTHON) scripts/get_sample.py
 
 embeddings: embeddings.pkl
 	$(PYTHON) scripts/get_embeddings.py
@@ -25,4 +28,7 @@ api_model: api/model/main.py
 
 run_app:
 	cd arxiv_app && ../$(PYTHON) manage.py runserver
+
+experiments:
+	$(PYTHON) scripts/experiments.py
 
