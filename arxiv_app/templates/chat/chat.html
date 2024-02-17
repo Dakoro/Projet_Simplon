@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}AI Chatbot{% endblock title %}
+
+{% block content %}
+<div class="p-6 w-[800px]" id="container">
+    <div class="mt-4 w-full relative p-6 overflow-y-auto h-[30rem] bg-gray-50 border border-gray-200"
+         id="chatbox">
+        {% for message in messages %}
+        <div class="mt-4">User: {{ message.user_message }}</div>
+        <div class="mt-4"div>Bot: {{ message.bot_message }}</div>
+        {% endfor %}
+    </div>
+
+    <form hx-post="{% url 'chat' %}" hx-target="#container" hx-swap="innerHTML" >
+        {% csrf_token %}
+        <div class="my-indicator"></div>
+        <div class="mt-4">
+            <input class="py-2 outline-none bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:border-blue-500"
+                   type="text" 
+                   name="question">
+            <button class="px-5 py-3 rounded-xl text-white bg-teal-800 hover:bg-teal-700" 
+                    type="submit">
+                Send
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock content %}

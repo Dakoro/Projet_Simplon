@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Logout{% endblock title %}
+
+{% block content %}
+    <h2 class="my-4 text-lg dark:text-white">You have been logged out</h2>
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            <a class="px-5 py-3 rounded-xl text-white bg-teal-800 hover:bg-teal-700" href="{% url 'login' %}">Log In Again</a>
+        </small>
+    </div>
+{% endblock %}
