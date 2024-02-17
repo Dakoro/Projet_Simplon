@@ -28,7 +28,3 @@ api_model: api/model/main.py
 
 run_app:
 	cd arxiv_app && ../$(PYTHON) manage.py runserver
-
-experiments:
-	$(PYTHON) scripts/experiments.py
-
