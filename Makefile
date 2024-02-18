@@ -21,7 +21,7 @@ embeddings: embeddings.pkl
 	$(PYTHON) scripts/get_embeddings.py
 
 api_data: api/data/main.py
-	cd api/data && uvicorn main:app --reload
+	cd api/data && uvicorn main:app --reload --port 8080
 
 api_model: api/model/main.py
 	cd api/model && uvicorn main:app --reload --port 8080
