@@ -3,13 +3,14 @@ from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from database import get_db
+from deps import get_secure_paper
 import models
 from schemas import UserOut, UserAuth, TokenSchema
 from utils import (
     get_hashed_password,
+    verify_password,
     create_access_token,
-    create_refresh_token,
-    verify_password
+    create_refresh_token
     )
 from uuid import uuid4
 
@@ -27,10 +28,9 @@ async def get_papers_batch(skip, limit, db: Session = Depends(get_db)):
     return data
 
 
-@app.get("/api/papers/{paper_id}")
-async def get_paper(paper_id, db: Session = Depends(get_db)):
-    data = db.query(models.Paper).filter(models.Paper.id == paper_id).first()
-    return data
+@app.get("/api/papers/")
+async def get_paper(db: Session = Depends(get_secure_paper)):
+    return db
 
 
 @app.get("/api/authors/{skip}:{limit}")
@@ -64,9 +64,9 @@ async def create_user(data: UserAuth, db: Session = Depends(get_db)):
     }
 
     print(user)
-    db_user = models.User(id=user['id'],
-                          email=user['email'],
-                          password=user['password'])
+    db_user = models.User(id=user.id,
+                          email=user.email,
+                          password=user.password)
     print(db_user)
     db.add(db_user)
     db.commit()

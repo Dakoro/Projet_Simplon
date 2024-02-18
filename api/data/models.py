@@ -16,7 +16,7 @@ class Paper(Base):
     id = Column(Integer, primary_key=True)
     year = Column(Integer)
     title = Column(String(200))
-    source = Column(String(5))
+    categories = Column(String(30))
     abstract = Column(Text)  # Using String for TEXT type
 
 
