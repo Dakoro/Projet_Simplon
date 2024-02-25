@@ -9,22 +9,28 @@ requirements: requirements.txt
 	$(VENV)/bin/pip freeze > requirements.txt
 
 bdd: bdd.db
-	$(PYTHON) scripts/load_all.py
+	$(PYTHON) scripts/bdd/load_all.py
 
 dataset: aggreated_data.csv
-	$(PYTHON) scripts/get_data.py
+	$(PYTHON) scripts/aggregation/get_data.py
 
 sample: sample.csv
-	$(PYTHON) scripts/get_sample.py
+	$(PYTHON) scripts/aggregation/get_sample.py
 
 embeddings: embeddings.pkl
 	$(PYTHON) scripts/get_embeddings.py
 
-api_data: api/data/main.py
+topic_modeling:
+	$(PYTHON) scripts/experiments/topic_modeling.py
+
+clustering:
+	$(PYTHON) scripts/experiments/clustering.py
+
+api_data: 
 	cd api/data && uvicorn main:app --reload --port 8080
 
-api_model: api/model/main.py
-	cd api/model && uvicorn main:app --reload --port 8080
+api_model: 
+	cd api/model && uvicorn main:app --reload --port 8081
 
 run_app:
 	cd arxiv_app && ../$(PYTHON) manage.py runserver
