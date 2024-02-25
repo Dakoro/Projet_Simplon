@@ -162,7 +162,9 @@ cython_debug/
 # Data_source
 data_source
 chroma_storage
+qdrant_storage/**
 logs/*.log
+logs/*.txt
 *.csv
 *.ipynb
 *.db
@@ -176,6 +178,8 @@ imgs
 
 # Mlflow
 mlruns
+mlartifacts
 
 # Tailwind 
 theme
+
