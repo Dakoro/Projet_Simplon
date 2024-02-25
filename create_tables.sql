@@ -8,6 +8,7 @@ CREATE TABLE Author (
 -- Create the Paper table
 CREATE TABLE Paper (
   id INTEGER PRIMARY KEY,
+  arxiv_id VARCHAR(20),
   year INTEGER,
   title VARCHAR(200),
   categories VARCHAR(20),
