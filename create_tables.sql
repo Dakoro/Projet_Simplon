@@ -25,8 +25,14 @@ CREATE TABLE Author_Paper (
 );
 
 -- Create User table for authentification
-CREATE TABLE User (
+CREATE TABLE UserApiData (
   id VARCHAR(255) PRIMARY KEY,
   email VARCHAR(255) NOT NULL,
+  password VARCHAR(60) NOT NULL
+);
+
+CREATE TABLE UserApiModel (
+  id VARCHAR(255) PRIMARY KEY,
+  username VARCHAR(255) NOT NULL,
   password VARCHAR(60) NOT NULL
 );
