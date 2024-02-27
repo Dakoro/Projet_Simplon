@@ -29,7 +29,7 @@ class Author_Paper(Base):
 
 
 class User(Base):
-    __tablename__ = "User"
+    __tablename__ = "UserApiData"
 
     id = Column(String(255), primary_key=True)
     email = Column(String(255), nullable=False)

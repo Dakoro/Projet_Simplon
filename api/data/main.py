@@ -3,7 +3,12 @@ from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from database import get_db
-from deps import get_secure_paper
+from deps import (
+    get_secure_paper,
+    get_secure_author,
+    get_secure_author_batch,
+    get_secure_paper_batch
+    )
 import models
 from schemas import UserOut, UserAuth, TokenSchema
 from utils import (
@@ -23,26 +28,22 @@ async def docs():
 
 
 @app.get("/api/papers/{skip}:{limit}")
-async def get_papers_batch(skip, limit, db: Session = Depends(get_db)):
-    data = db.query(models.Paper).offset(skip).limit(limit).all()
+async def get_papers_batch(data: dict = Depends(get_secure_paper_batch)):
     return data
 
 
 @app.get("/api/papers/")
-async def get_paper(db: Session = Depends(get_secure_paper)):
-    return db
-
-
-@app.get("/api/authors/{skip}:{limit}")
-async def get_authors_batch(skip, limit, db: Session = Depends(get_db)):
-    data = db.query(models.Author).offset(skip).limit(limit).all()
+async def get_paper(data: dict = Depends(get_secure_paper)):
     return data
 
 
-@app.get("/api/authors/{author_id}")
-async def get_author(author_id, db: Session = Depends(get_db)):
-    data = db.query(models.Author).filter(
-        models.Author.id == author_id).first()
+@app.get("/api/authors/{skip}:{limit}")
+async def get_authors_batch(data: Session = Depends(get_secure_author_batch)):
+    return data
+
+
+@app.get("/api/authors/")
+async def get_author(data: dict = Depends(get_secure_author)):
     return data
 
 
@@ -63,7 +64,6 @@ async def create_user(data: UserAuth, db: Session = Depends(get_db)):
         'id': str(uuid4())
     }
 
-    print(user)
     db_user = models.User(id=user.id,
                           email=user.email,
                           password=user.password)
