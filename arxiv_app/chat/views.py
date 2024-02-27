@@ -15,16 +15,21 @@ RAG_URL = os.path.join(API_MODEL_URL, 'api/inference/rag')
 
 @login_required
 def chat(request):
+    context = {}
     if request.method == "POST":
         question = request.POST.get('question')
         rag_res = requests.post(RAG_URL, params={"question": question})
         data = rag_res.json()
-        ai_res = data['answer']
+        ai_res = data['openai']['choices'][0]['message']
         print(ai_res['content'])
+        relevants_docs = data['relevants_docs']
+        print('\n\n'.join([d['page_content'] for d in relevants_docs]))
         Message.objects.create(user_message=question,
                                bot_message=ai_res['content'])
     messages = Message.objects.all()
-    return render(request, 'chat/chat.html', {"messages": messages})
+    context['messages'] = messages
+    context['relevants_docs'] = relevants_docs
+    return render(request, 'chat/chat.html', context)
 
 
 @login_required
