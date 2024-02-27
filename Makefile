@@ -32,5 +32,8 @@ api_data:
 api_model: 
 	cd api/model && uvicorn main:app --reload --port 8081
 
+mlflow:
+	mlflow server --port 8082
+
 run_app:
 	cd arxiv_app && ../$(PYTHON) manage.py runserver
