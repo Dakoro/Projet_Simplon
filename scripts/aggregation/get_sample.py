@@ -1,8 +1,10 @@
 import pandas as pd
 import re
+import os
+import nltk
 from nltk.corpus import stopwords
-from dotenv import load_dotenv
-load_dotenv()
+
+nltk.download('stopwords')
 
 STW = stopwords.words('english')
 
@@ -14,10 +16,11 @@ def process(text: str):
 
 
 def main():
-    path = '/home/dakoro/Projet_Simplon/aggreated_data.csv'
+    path = os.path.join(os.getcwd(), "files", "csv", "aggreated_data.csv")
     df = pd.read_csv(path).sample(n=10000, random_state=42)
     df['abstract'] = df['abstract'].apply(process)
-    df.to_csv('sample.csv', index=False)
+    sample_fp = os.path.join(os.getcwd(), "files", "csv", "sample.csv")
+    df.to_csv(sample_fp, index=False)
 
 
 if __name__ == "__main__":

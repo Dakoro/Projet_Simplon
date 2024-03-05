@@ -14,7 +14,7 @@ from utils import (
 
 load_dotenv()
 
-BDD_URI = os.getenv('BDD_URI')
+BDD_URI = os.path.join(os.getcwd(), 'bdd.db')
 ENGINE_URI = f'sqlite:///{BDD_URI}'
 
 
@@ -24,7 +24,7 @@ def main():
         encoding='utf-8',
         level=log.DEBUG)
 
-    df_arxiv = load_arxiv_papers()
+    df_arxiv = load_arxiv_papers(limit=100_000)
     df_arxiv_formated = format_arxiv_papers(df_arxiv)
 
     df_nips = load_nips_papers()
@@ -41,9 +41,13 @@ def main():
         df_scraping,
         df_mongo
     ]
+    
+    for df in dfs:
+        print(df.columns)
 
     df_concat = pd.concat(dfs)
     df_concat = df_concat.drop_duplicates('title')
+    df_concat = df_concat.drop("author", axis=1)
 
     engine = create_engine(ENGINE_URI, echo=True)
     with engine.connect() as conn:

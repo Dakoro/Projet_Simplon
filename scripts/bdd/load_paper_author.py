@@ -12,7 +12,7 @@ from utils import (
     )
 load_dotenv()
 
-BDD_URI = os.getenv('BDD_URI')
+BDD_URI = os.path.join(os.getcwd(), 'bdd.db')
 ENGINE_URI = f'sqlite:///{BDD_URI}'
 
 
@@ -39,7 +39,7 @@ def main():
         'title': [v[1] for v in papers]
     })
 
-    df_arxiv = load_arxiv_dataset()
+    df_arxiv = load_arxiv_dataset(limit=100_000)
     df_arxiv = format_arxiv_dataset(df_arxiv)
     df_arxiv = df_arxiv[['authors', 'title']].explode(column='authors')
     df_arxiv = df_arxiv.rename(columns={"authors": "name"})
@@ -50,10 +50,10 @@ def main():
     df_nips['name'] = df_nips['name'].str.lower()
 
     df_arxiv_api = request_arxiv()
-    df_arxiv_api['authors'] = df_arxiv_api['authors'].map(
+    df_arxiv_api['author'] = df_arxiv_api['author'].map(
         lambda s: s.lower().split(','))
-    df_arxiv_api = df_arxiv_api[['authors', "title"]].rename(
-        columns={"authors": "name"})
+    df_arxiv_api = df_arxiv_api[['author', "title"]].rename(
+        columns={"author": "name"})
     df_arxiv_api = df_arxiv_api.explode(column='name')
 
     df_mongo = get_mongo()[['title', 'author']]
@@ -80,6 +80,7 @@ def main():
         df_authors,
         on='name')[['paper_id', 'author_id']]
 
+    print(df_final)
     df_final.to_sql('Author_Paper', engine, if_exists='append', index=False)
 
 

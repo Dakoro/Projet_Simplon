@@ -14,8 +14,9 @@ from sqlalchemy import create_engine, text
 
 load_dotenv()
 
-ARXIV_URI = os.getenv("ARXIV")
-NIPS_BDD = os.getenv("NIPS_BDD")
+ROOT_DIR = os.getcwd()
+ARXIV_URI = os.path.join(ROOT_DIR, os.getenv("ARXIV"))
+NIPS_BDD = os.path.join(ROOT_DIR, os.getenv("NIPS_BDD"))
 OPENAI_KEY = os.getenv('OPENAI_KEY')
 
 
@@ -29,7 +30,7 @@ def get_sql_queries(path: str, n: int):
     return text(readf(path).split("\n\n")[n])
 
 
-def load_arxiv_dataset() -> pd.DataFrame:
+def load_arxiv_dataset(limit: int) -> pd.DataFrame:
     data = []
     cols = [
         "id",
@@ -41,7 +42,9 @@ def load_arxiv_dataset() -> pd.DataFrame:
     ]
 
     with open(ARXIV_URI, "r", encoding="utf-8") as jsf:
-        for line in jsf:
+        for idx, line in enumerate(jsf, start=1):
+            if idx == limit:
+                break
             doc = json.loads(line)
             list_data = [
                 doc["id"],
@@ -55,7 +58,7 @@ def load_arxiv_dataset() -> pd.DataFrame:
     return pd.DataFrame(data=data, columns=cols)
 
 
-def load_arxiv_papers() -> pd.DataFrame:
+def load_arxiv_papers(limit=100_000) -> pd.DataFrame:
     data = []
     cols = [
         "arxiv_id",
@@ -66,7 +69,9 @@ def load_arxiv_papers() -> pd.DataFrame:
     ]
 
     with open(ARXIV_URI, "r", encoding="utf-8") as jsf:
-        for line in jsf:
+        for idx, line in enumerate(jsf, start=1):
+            if idx == limit:
+                break
             doc = json.loads(line)
             list_data = [
                 doc['id'],
@@ -87,7 +92,7 @@ def format_arxiv_papers(df: pd.DataFrame):
 
 def load_nips_dataset() -> pd.DataFrame:
     engine = create_engine(f"sqlite:///{NIPS_BDD}")
-    query = get_sql_queries("/home/dakoro/Projet_Simplon/queries.txt", 0)
+    query = get_sql_queries(os.path.join(os.getcwd(), 'queries.txt'), 0)
     with engine.connect() as conn:
         result = conn.execute(query).all()
     return pd.DataFrame(result)
@@ -95,7 +100,7 @@ def load_nips_dataset() -> pd.DataFrame:
 
 def load_nips_papers() -> pd.DataFrame:
     engine = create_engine(f"sqlite:///{NIPS_BDD}")
-    query = get_sql_queries("/home/dakoro/Projet_Simplon/queries.txt", 1)
+    query = get_sql_queries(os.path.join(os.getcwd(), 'queries.txt'), 1)
     with engine.connect() as conn:
         result = conn.execute(query).all()
     return pd.DataFrame(result)
@@ -145,11 +150,13 @@ def request_arxiv():
         results['abstract'].append(result.summary)
 
     df = pd.DataFrame.from_dict(results)
+    df = df.rename(columns={"authors": "author"})
     return df
 
 
 def rm_new_line(text: str) -> str:
-    return re.sub('\n', " ", text)
+    res = re.sub(r'[^\w\s]', '', text)
+    return " ".join(res.split()[:-2])
 
 
 def parse_title(title_tag: Tag) -> str:
@@ -159,31 +166,32 @@ def parse_title(title_tag: Tag) -> str:
 
 
 def extract_year(year_string: str):
-    pattern = re.compile('\d\d\d\d')
-    return pattern.findall(year_string)[0]
+    pattern = "\d\d\d\d"
+    return re.findall(pattern, year_string)[-1]
 
 
 def get_scraping():
-    path = '/home/dakoro/Projet_Simplon/data_source/[1910.06709] A Simple Proof of the Quadratic Formula.html'
+    path = os.path.join(os.getcwd(), "data_source", "doc_scraping.html")
     with open(path, 'r', encoding='utf-8') as f:
         html_doc = f.read()
     soup = BeautifulSoup(html_doc, features="html.parser")
     title = soup.find('title')
     arxiv_id = title.text.split()[0][1:-1]
 
-    abstract_tag = soup.find_all("p", {"id": "id3.id1"})[0]
-    abstract = abstract_tag.string
-
-    date_tag = soup.find("div", class_="ltx_dates")
+    abstract_tag = soup.find("div", {"class": "ltx_abstract"})
+    abstract = abstract_tag.find("p").string
+    
+    date_tag = soup.find("div", {"id": "watermark-tr"})
     year = extract_year(date_tag.string)
 
-    author_tag = soup.find("span", class_="ltx_personname")
+    author_tag = soup.find("span", {"class": "ltx_personname"})
+    author = rm_new_line(author_tag.text)
 
     df = pd.DataFrame({
         "arxiv_id": [arxiv_id],
         "title": [parse_title(title)],
         "year": [year],
-        "author": [rm_new_line(author_tag.string)],
+        "author": [author],
         "abstract": [abstract]
     })
     return df

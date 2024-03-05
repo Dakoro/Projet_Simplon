@@ -64,9 +64,9 @@ async def create_user(data: UserAuth, db: Session = Depends(get_db)):
         'id': str(uuid4())
     }
 
-    db_user = models.User(id=user.id,
-                          email=user.email,
-                          password=user.password)
+    db_user = models.User(id=user['id'],
+                          email=user['email'],
+                          password=user['password'])
     print(db_user)
     db.add(db_user)
     db.commit()

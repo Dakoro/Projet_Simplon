@@ -4,12 +4,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-ROOT_DIR = os.getenv('ROOT_DIR')
+ROOT_DIR = os.getcwd()
 
 
 def execute_python_script(fn: str):
     fp = os.path.join(ROOT_DIR, 'scripts', 'bdd', fn)
-    subprocess.call(['python', fp])
+    try:
+        subprocess.call(['python', fp])
+    except:
+        subprocess.call(["python3", fp])
 
 
 def create_bdd(fp):

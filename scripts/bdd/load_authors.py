@@ -14,7 +14,7 @@ from utils import (
 
 load_dotenv()
 
-BDD_URI = os.getenv('BDD_URI')
+BDD_URI = os.path.join(os.getcwd(), 'bdd.db')
 ENGINE_URI = f'sqlite:///{BDD_URI}'
 
 
@@ -55,7 +55,7 @@ def format_df_scraping(df: pd.DataFrame):
 
 
 def format_arxiv_api(df: pd.DataFrame):
-    df_result = df.groupby('authors').count().reset_index().rename(
+    df_result = df.groupby('author').count().reset_index().rename(
         columns={"index": "name",
                  "count": "article_count"}).drop(
             columns=['year', 'arxiv_id', 'abstract', "categories"])
@@ -79,7 +79,7 @@ def main():
         columns={"title": "article_count"}).drop(
             columns=['year'])
 
-    df_arxiv = format_arxiv_dataset(load_arxiv_dataset())
+    df_arxiv = format_arxiv_dataset(load_arxiv_dataset(limit=100_000))
     # authors = [author for ls in df_arxiv['authors'] for author in ls]
     article_count = get_result_count_optimized(df_arxiv)
 
