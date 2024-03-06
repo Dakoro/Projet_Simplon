@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+gunicorn
+numpy
+pandas
+arxiv
+python-dotenv
+nltk
+SQLAlchemy
+pymongo
+passlib
+beautifulsoup4
+python-jose
+python-multipart

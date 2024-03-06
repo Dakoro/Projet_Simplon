@@ -15,3 +15,5 @@ pymongo
 beautifulsoup4
 mlflow
 openai
+passlib
+python-jose
