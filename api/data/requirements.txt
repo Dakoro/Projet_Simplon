@@ -1,6 +1,7 @@
 fastapi
 uvicorn
 gunicorn
+httpx
 numpy
 pandas
 arxiv
