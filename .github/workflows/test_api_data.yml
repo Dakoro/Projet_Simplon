@@ -24,5 +24,8 @@ jobs:
         pip install pytest
 
     - name: Run tests
+      env:
+        JWT_SECRET_KEY: ${{ vars.JWT_SECRET_KEY }}
+        JWT_REFRESH_SECRET_KEY: ${{ vars.JWT_REFRESH_SECRET_KEY }}
       run: |
         pytest -vv api/data/test_api.py
