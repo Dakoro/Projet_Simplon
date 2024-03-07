@@ -27,22 +27,22 @@ async def docs():
     return RedirectResponse(url='/docs')
 
 
-@app.get("/api/papers/{skip}:{limit}")
+@app.get("/api/papers/")
 async def get_papers_batch(data: dict = Depends(get_secure_paper_batch)):
     return data
 
 
-@app.get("/api/papers/")
+@app.get("/api/paper/")
 async def get_paper(data: dict = Depends(get_secure_paper)):
     return data
 
 
-@app.get("/api/authors/{skip}:{limit}")
+@app.get("/api/authors/")
 async def get_authors_batch(data: Session = Depends(get_secure_author_batch)):
     return data
 
 
-@app.get("/api/authors/")
+@app.get("/api/author/")
 async def get_author(data: dict = Depends(get_secure_author)):
     return data
 

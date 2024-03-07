@@ -28,13 +28,12 @@ async def common_parameters_author(author_id: int):
     return {"id": author_id}
 
 
-async def common_parameters_batch(skip: int, limit: int):
-    return {"offset": skip,
+async def common_parameters_batch(offset: int, limit: int):
+    return {"offset": offset,
             "limit": limit}
 
 
 async def get_secure_paper(
-        table=models.Paper,
         commons: dict = Depends(common_parameters_paper),
         token: str = Depends(reuseable_oauth),
         db: Session = Depends(get_db)
@@ -57,8 +56,8 @@ async def get_secure_paper(
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    data = db.query(table).filter(
-        table.id == commons['id']).first()
+    data = db.query(models.Paper).filter(
+        models.Paper.id == commons['id']).first()
 
     if data is None:
         raise HTTPException(
@@ -70,7 +69,6 @@ async def get_secure_paper(
 
 
 async def get_secure_author(
-        table=models.Author,
         commons: dict = Depends(common_parameters_author),
         token: str = Depends(reuseable_oauth),
         db: Session = Depends(get_db)
@@ -93,8 +91,8 @@ async def get_secure_author(
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    data = db.query(table).filter(
-        table.id == commons['id']).first()
+    data = db.query(models.Author).filter(
+        models.Author.id == commons['id']).first()
 
     if data is None:
         raise HTTPException(
@@ -106,7 +104,6 @@ async def get_secure_author(
 
 
 async def get_secure_author_batch(
-        table=models.Author,
         commons: dict = Depends(common_parameters_batch),
         token: str = Depends(reuseable_oauth),
         db: Session = Depends(get_db)
@@ -130,7 +127,7 @@ async def get_secure_author_batch(
             headers={"WWW-Authenticate": "Bearer"},
         )
     skip, limit = commons['offset'], commons['limit']
-    data = db.query(table).offset(skip).limit(limit).all()
+    data = db.query(models.Author).offset(skip).limit(limit).all()
 
     if data is None:
         raise HTTPException(
@@ -142,7 +139,6 @@ async def get_secure_author_batch(
 
 
 async def get_secure_paper_batch(
-        table=models.Paper,
         commons: dict = Depends(common_parameters_batch),
         token: str = Depends(reuseable_oauth),
         db: Session = Depends(get_db)
@@ -166,7 +162,7 @@ async def get_secure_paper_batch(
             headers={"WWW-Authenticate": "Bearer"},
         )
     skip, limit = commons['offset'], commons['limit']
-    data = db.query(table).offset(skip).limit(limit).all()
+    data = db.query(models.Paper).offset(skip).limit(limit).all()
 
     if data is None:
         raise HTTPException(
