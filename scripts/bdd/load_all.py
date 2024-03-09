@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 ROOT_DIR = os.getcwd()
+BDD_PATH = os.path.join(ROOT_DIR, 'scripts', 'bdd', 'bdd.db')
+BDD_SQL_SCRIPT = os.path.join(ROOT_DIR, 'scripts', 'bdd', 'create_tables.sql')
 
 
 def execute_python_script(fn: str):
@@ -16,9 +18,14 @@ def execute_python_script(fn: str):
 
 
 def create_bdd(fp):
+    """Create the database with an sql script
+
+    Args:
+        fp (str): path to database
+    """
     if os.path.exists(fp):
         os.remove(fp)
-    command = "cat create_tables.sql | sqlite3 bdd.db"
+    command = f"cat {BDD_SQL_SCRIPT} | sqlite3 {BDD_PATH}"
     subprocess.run(
         command,
         shell=True,
@@ -27,7 +34,9 @@ def create_bdd(fp):
 
 
 def main():
-    create_bdd(os.path.join(ROOT_DIR, 'bdd.db'))
+    """Main function that execute multiple scripts
+    """
+    create_bdd(BDD_PATH)
     execute_python_script('load_papers.py')
     execute_python_script('load_authors.py')
     execute_python_script('load_paper_author.py')

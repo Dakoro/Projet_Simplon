@@ -28,6 +28,12 @@ Base.metadata.create_all(bind=engine)
 # From: https://docs.sqlalchemy.org/en/14/dialects/sqlite.html#serializable-isolation-savepoints-transactional-ddl
 @sa.event.listens_for(engine, "connect")
 def do_connect(dbapi_connection, connection_record):
+    """handle engine connection and behaviors
+
+    Args:
+        dbapi_connection (Any): connection
+        connection_record (Any): connection history
+    """
     # disable pysqlite's emitting of the BEGIN statement entirely.
     # also stops it from emitting COMMIT before any DDL.
     dbapi_connection.isolation_level = None
@@ -35,12 +41,22 @@ def do_connect(dbapi_connection, connection_record):
 
 @sa.event.listens_for(engine, "begin")
 def do_begin(conn):
+    """handle the engine begin
+
+    Args:
+        conn (Any): connection object
+    """
     # emit our own BEGIN
     conn.exec_driver_sql("BEGIN")
 
 
 @pytest.fixture()
 def session():
+    """pytest fixture to handle the Sqlalchemy Session
+
+    Yields:
+        Session: Sqlalchemy Session instance
+    """
     connection = engine.connect()
     transaction = connection.begin()
     session = TestingSessionLocal(bind=connection)
@@ -70,6 +86,11 @@ def session():
 # session fixture.
 @pytest.fixture()
 def client(session):
+    """Client Instance to perform resquest to the api
+
+    Args:
+        session (Session): Session instance to handle database query
+    """
     def override_get_db():
         yield session
 
@@ -79,12 +100,26 @@ def client(session):
 
 
 def test_ping(client):
+    """Ping the api
+
+    Args:
+        client (TestClient): TestClient Instance
+    """
     res = client.get('/')
     assert res.status_code == 200
 
 
 @pytest.fixture()
 def token(client, session):
+    """Fixture to handle identification with JWT token
+
+    Args:
+        client (_type_): _description_
+        session (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     data_sign = {
         "email": "test_user@gmail.com",
         "password": "M2tqjbch+1906"
@@ -116,6 +151,14 @@ def token(client, session):
 
 
 def test_protected_route(client, session, token):
+    """Test the accest to the protected route with correct login auth
+       with JWT token
+
+    Args:
+        client (TestClient): Client to send request
+        session (Session): Handle request to database
+        token (str): JWT token
+    """
     author_route = "/api/author/"
     paper_route = "/api/paper/"
     authors_route = "/api/authors/"

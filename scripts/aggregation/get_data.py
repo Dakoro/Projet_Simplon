@@ -10,6 +10,8 @@ ENGINE_URI = f'sqlite:///{BDD_URI}'
 
 
 def main():
+    """Main function
+    """
     engine = create_engine(ENGINE_URI, echo=True)
     query = """
     SELECT

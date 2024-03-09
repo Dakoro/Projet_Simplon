@@ -15,6 +15,11 @@ Base = declarative_base()
 
 
 def get_db():
+    """Generate an sqlalchemy Session instance
+
+    Yields:
+        Session: SQLalchemy Session instance
+    """
     db = SessionLocal()
     try:
         yield db

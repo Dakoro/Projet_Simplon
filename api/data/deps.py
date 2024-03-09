@@ -21,14 +21,39 @@ reuseable_oauth = OAuth2PasswordBearer(
 
 
 async def common_parameters_paper(paper_id: int):
+    """Define commons parameters
+
+    Args:
+        paper_id (int): id of the paper in db
+
+    Returns:
+        dict: return paper id
+    """
     return {"id": paper_id}
 
 
 async def common_parameters_author(author_id: int):
+    """Define commons parameter
+
+    Args:
+        author_id (int): id of an author in db
+
+    Returns:
+        dict: return the author id
+    """
     return {"id": author_id}
 
 
 async def common_parameters_batch(offset: int, limit: int):
+    """Commons parameter when requesting a batch from db
+
+    Args:
+        offset (int): starting point
+        limit (int): ending point
+
+    Returns:
+        dict: dict of params
+    """
     return {"offset": offset,
             "limit": limit}
 
@@ -38,6 +63,21 @@ async def get_secure_paper(
         token: str = Depends(reuseable_oauth),
         db: Session = Depends(get_db)
         ) -> SystemUser:
+    """secure the route with JWT auth
+
+    Args:
+        commons (dict, optional): params. Defaults to Depends(common_parameters_paper).
+        token (str, optional): JWT token. Defaults to Depends(reuseable_oauth).
+        db (Session, optional): SQLalchemy instance. Defaults to Depends(get_db).
+
+    Raises:
+        HTTPException: 401 non authorized access
+        HTTPException: 403 action forbidden
+        HTTPException: 404 requested data not found
+
+    Returns:
+        SystemUser: data send by the server
+    """
     try:
         payload = jwt.decode(
             token, JWT_SECRET_KEY, algorithms=[ALGORITHM]
@@ -73,6 +113,21 @@ async def get_secure_author(
         token: str = Depends(reuseable_oauth),
         db: Session = Depends(get_db)
         ) -> SystemUser:
+    """Secure the route with a JWT login
+
+    Args:
+        commons (dict, optional): params. Defaults to Depends(common_parameters_author).
+        token (str, optional): JWT token. Defaults to Depends(reuseable_oauth).
+        db (Session, optional): SQLalchemy instance. Defaults to Depends(get_db).
+
+    Raises:
+        HTTPException: 401 login failed
+        HTTPException: 403 forbidden action
+        HTTPException: 404 data was not found
+
+    Returns:
+        SystemUser: response from the server
+    """
     try:
         payload = jwt.decode(
             token, JWT_SECRET_KEY, algorithms=[ALGORITHM]
@@ -108,6 +163,21 @@ async def get_secure_author_batch(
         token: str = Depends(reuseable_oauth),
         db: Session = Depends(get_db)
         ) -> SystemUser:
+    """Secure route with JWT token
+
+    Args:
+        commons (dict, optional): params. Defaults to Depends(common_parameters_batch).
+        token (str, optional): JWt token. Defaults to Depends(reuseable_oauth).
+        db (Session, optional): SQLalchemy instance. Defaults to Depends(get_db).
+
+    Raises:
+        HTTPException: 401 login failed
+        HTTPException: 403 forbidden action
+        HTTPException: 404 data wasn't found
+
+    Returns:
+        SystemUser: response from the server
+    """
     try:
         payload = jwt.decode(
             token, JWT_SECRET_KEY, algorithms=[ALGORITHM]
@@ -143,6 +213,21 @@ async def get_secure_paper_batch(
         token: str = Depends(reuseable_oauth),
         db: Session = Depends(get_db)
         ) -> SystemUser:
+    """Secure route with JWT authentification
+
+    Args:
+        commons (dict, optional): params. Defaults to Depends(common_parameters_batch).
+        token (str, optional): JWT token. Defaults to Depends(reuseable_oauth).
+        db (Session, optional): SQLalchemy instance. Defaults to Depends(get_db).
+
+    Raises:
+        HTTPException: 401 wrong credidentials
+        HTTPException: 403 forbidden action
+        HTTPException: 404 data wasn't found
+
+    Returns:
+        SystemUser: response from the server
+    """
     try:
         payload = jwt.decode(
             token, JWT_SECRET_KEY, algorithms=[ALGORITHM]

@@ -17,6 +17,8 @@ ENGINE_URI = f'sqlite:///{BDD_URI}'
 
 
 def main():
+    """Main Function
+    """
     engine = create_engine(ENGINE_URI, echo=True)
     queries = [
         'SELECT id, name FROM Author;',

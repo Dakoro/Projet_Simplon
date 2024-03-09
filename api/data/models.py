@@ -3,6 +3,11 @@ from database import Base
 
 
 class Author(Base):
+    """Model for the Author table 
+
+    Args:
+        Base (Any): declarative base model from SQLalchemy
+    """
     __tablename__ = 'Author'
 
     id = Column(Integer, primary_key=True)
@@ -11,6 +16,11 @@ class Author(Base):
 
 
 class Paper(Base):
+    """Basic Model class for the Paper table
+
+    Args:
+        Base (Any): declarative base model from SQLalchemy
+    """
     __tablename__ = 'Paper'
 
     id = Column(Integer, primary_key=True)
@@ -21,6 +31,11 @@ class Paper(Base):
 
 
 class Author_Paper(Base):
+    """Model for the Author_Paper table
+
+    Args:
+        Base (Any): declarative base  model from Sqlalchemy
+    """
     __tablename__ = 'Author_Paper'
 
     id = Column(Integer, primary_key=True)
@@ -29,6 +44,11 @@ class Author_Paper(Base):
 
 
 class User(Base):
+    """Model for the UserApiData table
+
+    Args:
+        Base (Any): declarative base model from SQLalchemy
+    """
     __tablename__ = "UserApiData"
 
     id = Column(String(255), primary_key=True)

@@ -19,6 +19,14 @@ ENGINE_URI = f'sqlite:///{BDD_URI}'
 
 
 def get_result_count_optimized(df: pd.DataFrame):
+    """Optimized version of the count article with pandas explode func
+
+    Args:
+        df (pd.DataFrame): input df
+
+    Returns:
+        pd.DataFrame: ouput df
+    """
     # Flatten the 'authors' lists into a single Series
     authors_series = df['authors'].explode()
 
@@ -29,12 +37,28 @@ def get_result_count_optimized(df: pd.DataFrame):
 
 
 def format_df_final(df: pd.DataFrame) -> pd.DataFrame:
+    """Format the concatened df
+
+    Args:
+        df (pd.DataFrame): input df
+
+    Returns:
+        pd.DataFrame: output df
+    """
     df['name'] = df['name'].str.lower()
     df_final = df.groupby('name').sum().reset_index()
     return df_final
 
 
 def format_df_mongo(df: pd.DataFrame):
+    """format the mongo df
+
+    Args:
+        df (pd.DataFrame): input df
+
+    Returns:
+    pd.DataFrame: ouput df
+    """
     df = df.rename(columns={"author": "authors"})
     df['authors'] = df['authors'].str.split(',').map(
         lambda lst: [s.strip() for s in lst])
@@ -47,6 +71,14 @@ def format_df_mongo(df: pd.DataFrame):
 
 
 def format_df_scraping(df: pd.DataFrame):
+    """Format scraping df
+
+    Args:
+        df (pd.DataFrame): input df
+
+    Returns:
+        pd.DataFrame: output df
+    """
     df_scraping_count = df.groupby('author').count().reset_index().rename(
         columns={"index": "name",
                  "count": "article_count"}).drop(
@@ -55,6 +87,14 @@ def format_df_scraping(df: pd.DataFrame):
 
 
 def format_arxiv_api(df: pd.DataFrame):
+    """Format arxiv api
+
+    Args:
+        df (pd.DataFrame): input df
+
+    Returns:
+        pd.DataFrame: output df
+    """
     df_result = df.groupby('author').count().reset_index().rename(
         columns={"index": "name",
                  "count": "article_count"}).drop(
@@ -63,6 +103,11 @@ def format_arxiv_api(df: pd.DataFrame):
 
 
 def insert_bdd(df: pd.DataFrame):
+    """Insert data into the db
+
+    Args:
+        df (pd.DataFrame): input df
+    """
     engine = create_engine(ENGINE_URI, echo=True)
     try:
         df.to_sql("Author", engine, if_exists='append', index=False)
@@ -72,6 +117,8 @@ def insert_bdd(df: pd.DataFrame):
 
 
 def main():
+    """Main Function
+    """
 
     df_nips = load_nips_dataset()
 

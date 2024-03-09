@@ -19,6 +19,8 @@ ENGINE_URI = f'sqlite:///{BDD_URI}'
 
 
 def main():
+    """Main Function
+    """
     log.basicConfig(
         filename='logs/load_bdd.log',
         encoding='utf-8',
