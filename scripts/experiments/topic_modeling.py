@@ -2,6 +2,7 @@ import os
 import mlflow
 import pickle
 import pandas as pd
+import openai
 from bertopic import BERTopic
 from dotenv import load_dotenv
 from umap import UMAP
@@ -18,8 +19,16 @@ from bertopic.representation import (
     PartOfSpeech
 )
 
+from dotenv import load_dotenv
 load_dotenv()
-mlflow.set_tracking_uri(uri="http://127.0.0.1:8080")
+
+ROOT_DIR = os.getcwd()
+MLFLOW_URI = os.getenv('MLFLOW_URI')
+SAMPLE_PATH = os.path.join(ROOT_DIR, 'files', 'pkl', 'sample.pkl')
+EMB_PATH = os.path.join(ROOT_DIR, 'files', 'pkl', 'embeddings.pkl')
+
+
+mlflow.set_tracking_uri(uri=MLFLOW_URI)
 mlflow.set_experiment("Topic Modeling")
 
 
@@ -113,10 +122,10 @@ def get_best_model(coherence_list, list_topics):
 
 
 def main():
-    df = pd.read_csv('sample.csv')
+    df = pd.read_pickle(SAMPLE_PATH)
     embeddings_model = SentenceTransformer('BAAI/bge-large-en-v1.5')
     docs = df['abstract'].to_list()
-    embeddings = load_embeddings()
+    embeddings = load_embeddings(EMB_PATH)
     years = df['year'].to_list()
     umap_params_1 = {
         "n_neighbors": 25,
@@ -161,7 +170,7 @@ def main():
 
     OPENAI_API_KEY = os.getenv('OPENAI_KEY')
 
-    client = OpenAI(api_key=OPENAI_API_KEY)
+    client = openai.OpenAI(api_key=OPENAI_API_KEY)
     prompt = """
     I have a topic that contains the following documents:
     [DOCUMENTS]
@@ -175,8 +184,7 @@ def main():
                           model="gpt-3.5-turbo",
                           exponential_backoff=True,
                           chat=True,
-                          prompt=prompt,
-                          temperature=0)
+                          prompt=prompt)
 
     # All representation models
     representation_model = {

@@ -1,24 +1,19 @@
-from sentence_transformers import SentenceTransformer
+import os
 import pandas as pd
 import pickle
+from sentence_transformers import SentenceTransformer
 
-COLS = ['paper_id',
-        'name',
-        'article_count',
-        'year',
-        'title',
-        'source',
-        'abstract']
-
+SAMPLE_PATH = os.path.join(os.getcwd(), 'files', 'pkl', 'sample.pkl')
+EMBEDDINGS_PATH = os.path.join(os.getcwd(), 'files', 'pkl', 'embeddings.pkl')
 
 def main():
-    df = pd.read_csv("/home/dakoro/Projet_Simplon/sample.csv", names=COLS)
-    df = df.iloc[1:]
+    df = pd.read_pickle(SAMPLE_PATH)
+    print(df.columns)
     model = SentenceTransformer('BAAI/bge-large-en-v1.5')
     docs = df['abstract'].to_list()
     embeddings = model.encode(docs, show_progress_bar=True)
 
-    with open("./embeddings.pkl", 'wb') as pklf:
+    with open(EMBEDDINGS_PATH, 'wb') as pklf:
         pickle.dump(embeddings, pklf)
 
 

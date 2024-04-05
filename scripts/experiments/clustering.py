@@ -9,8 +9,9 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 load_dotenv()
 
-ROOT_DIR = os.getenv('ROOT_DIR')
+ROOT_DIR = os.getcwd()
 MFLOW_URI = os.getenv('MLFLOW_URI')
+EMB_PATH = os.path.join(ROOT_DIR, 'files', 'pkl', 'embeddings.pkl')
 
 mlflow.set_tracking_uri(uri=MFLOW_URI)
 mlflow.set_experiment("Clustering")
@@ -42,7 +43,7 @@ def get_best_k(K, silhouette_scores):
 
 def main():
     K = range(2, 10, 1)
-    embeddings = load_embeddings()
+    embeddings = load_embeddings(EMB_PATH)
     reducer = UMAP(n_neighbors=20, n_components=5, min_dist=0.01)
     reduce_emb = reducer.fit_transform(embeddings)
     silhouette_scores = get_silhouette_scores(K, reduce_emb)

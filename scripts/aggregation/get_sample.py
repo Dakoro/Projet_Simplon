@@ -16,11 +16,11 @@ def process(text: str):
 
 
 def main():
-    path = os.path.join(os.getcwd(), "files", "csv", "aggreated_data.csv")
-    df = pd.read_csv(path).sample(n=10000, random_state=42)
+    path = os.path.join(os.getcwd(), "files", "pkl", "aggreated_data.pkl")
+    df = pd.read_pickle(path).sample(n=10000, random_state=42)
     df['abstract'] = df['abstract'].apply(process)
-    sample_fp = os.path.join(os.getcwd(), "files", "csv", "sample.csv")
-    df.to_csv(sample_fp, index=False)
+    sample_fp = os.path.join(os.getcwd(), "files", "pkl", "sample.pkl")
+    df.to_pickle(sample_fp)
 
 
 if __name__ == "__main__":

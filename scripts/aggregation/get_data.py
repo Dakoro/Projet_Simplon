@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-BDD_URI = os.path.join(os.getcwd(), 'bdd.db')
+BDD_URI = os.path.join(os.getcwd(), 'scripts', 'bdd', 'bdd.db')
 ENGINE_URI = f'sqlite:///{BDD_URI}'
 
 
@@ -48,8 +48,8 @@ def main():
         data_df[col] = list_row
 
     df = pd.DataFrame.from_dict(data_df)
-    agg_fp = os.path.join(os.getcwd(), "files", "csv", "aggreated_data.csv")
-    df.to_csv(agg_fp, index=False)
+    agg_fp = os.path.join(os.getcwd(), "files", "pkl", "aggreated_data.pkl")
+    df.to_pickle(agg_fp)
 
 
 if __name__ == '__main__':

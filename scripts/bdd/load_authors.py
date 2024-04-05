@@ -14,7 +14,8 @@ from utils import (
 
 load_dotenv()
 
-BDD_URI = os.path.join(os.getcwd(), 'bdd.db')
+ROOT_DIR = os.getcwd()
+BDD_URI = os.path.join(ROOT_DIR, 'scripts', 'bdd', 'bdd.db')
 ENGINE_URI = f'sqlite:///{BDD_URI}'
 
 
@@ -126,7 +127,7 @@ def main():
         columns={"title": "article_count"}).drop(
             columns=['year'])
 
-    df_arxiv = format_arxiv_dataset(load_arxiv_dataset(limit=100_000))
+    df_arxiv = format_arxiv_dataset(load_arxiv_dataset())
     # authors = [author for ls in df_arxiv['authors'] for author in ls]
     article_count = get_result_count_optimized(df_arxiv)
 

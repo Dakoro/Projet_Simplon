@@ -14,7 +14,8 @@ from utils import (
 
 load_dotenv()
 
-BDD_URI = os.path.join(os.getcwd(), 'bdd.db')
+ROOT_DIR = os.getcwd()
+BDD_URI = os.path.join(ROOT_DIR, 'scripts', 'bdd', 'bdd.db')
 ENGINE_URI = f'sqlite:///{BDD_URI}'
 
 
@@ -26,7 +27,7 @@ def main():
         encoding='utf-8',
         level=log.DEBUG)
 
-    df_arxiv = load_arxiv_papers(limit=100_000)
+    df_arxiv = load_arxiv_papers()
     df_arxiv_formated = format_arxiv_papers(df_arxiv)
 
     df_nips = load_nips_papers()

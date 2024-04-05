@@ -4,6 +4,7 @@ import re
 import json
 import arxiv
 import pandas as pd
+from pathlib import Path
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 from dotenv import load_dotenv
@@ -19,7 +20,8 @@ NIPS_BDD = os.path.join(ROOT_DIR, os.getenv("NIPS_BDD"))
 
 
 def readf(path: str) -> str:
-    """Read a text file
+    """
+    Read a text file
 
     Args:
         path (str): file path
@@ -206,19 +208,6 @@ def request_arxiv() -> pd.DataFrame:
     return df
 
 
-def rm_new_line(text: str) -> str:
-    """Remove new line in a string
-
-    Args:
-        text (str): input text
-
-    Returns:
-        str: ouput text
-    """
-    res = re.sub(r'[^\w\s]', '', text)
-    return " ".join(res.split()[:-2])
-
-
 def parse_title(title_tag: Tag) -> str:
     """Parse the title in a html file
 
@@ -252,25 +241,29 @@ def get_scraping():
     Returns:
         pd.DataFrame: ouput df
     """
-    path = os.path.join(os.getcwd(), "data_source", "doc_scraping.html")
+    path = os.path.join(ROOT_DIR, "data_source", "doc_scraping.html")
     with open(path, 'r', encoding='utf-8') as f:
         html_doc = f.read()
     soup = BeautifulSoup(html_doc, features="html.parser")
-    title = soup.find('title')
-    arxiv_id = title.text.split()[0][1:-1]
+    
+    title_tag = soup.find('title')
+    title = parse_title(title_tag)
+    
+    arxiv_id = re.findall(r'\[(.*?)\]', title_tag.text)
+    arxiv_id = arxiv_id[0]
 
     abstract_tag = soup.find("div", {"class": "ltx_abstract"})
     abstract = abstract_tag.find("p").string
     
-    date_tag = soup.find("div", {"id": "watermark-tr"})
+    date_tag = soup.find("div", {"class": "ltx_dates"})
     year = extract_year(date_tag.string)
 
     author_tag = soup.find("span", {"class": "ltx_personname"})
-    author = rm_new_line(author_tag.text)
+    author = re.sub('\n', '', author_tag.text)
 
     df = pd.DataFrame({
         "arxiv_id": [arxiv_id],
-        "title": [parse_title(title)],
+        "title": [title],
         "year": [year],
         "author": [author],
         "abstract": [abstract]

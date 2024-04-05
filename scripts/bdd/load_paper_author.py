@@ -12,7 +12,8 @@ from utils import (
     )
 load_dotenv()
 
-BDD_URI = os.path.join(os.getcwd(), 'bdd.db')
+ROOT_DIR = os.getcwd()
+BDD_URI = os.path.join(ROOT_DIR, 'scripts', 'bdd', 'bdd.db')
 ENGINE_URI = f'sqlite:///{BDD_URI}'
 
 
@@ -41,7 +42,7 @@ def main():
         'title': [v[1] for v in papers]
     })
 
-    df_arxiv = load_arxiv_dataset(limit=100_000)
+    df_arxiv = load_arxiv_dataset()
     df_arxiv = format_arxiv_dataset(df_arxiv)
     df_arxiv = df_arxiv[['authors', 'title']].explode(column='authors')
     df_arxiv = df_arxiv.rename(columns={"authors": "name"})
