@@ -1,30 +1,26 @@
-VENV := env
-PYTHON := sudo $(VENV)/bin/python
-
-setup:
-	sudo python3 -m venv $(VENV)
-	sudo $(VENV)/bin/pip install -r requirements.txt
 
 requirements: requirements.txt
-	sudo $(VENV)/bin/pip freeze > requirements.txt
+	pip freeze > requirements.txt
 
-bdd: bdd.db
-	$(PYTHON) scripts/bdd/load_all.py
+bdd:
+	python scripts/bdd/load_all.py
 
 dataset:
-	$(PYTHON) scripts/aggregation/get_data.py
+	python scripts/aggregation/get_data.py
 
 sample:
-	$(PYTHON) scripts/aggregation/get_sample.py
+	python scripts/aggregation/get_sample.py
 
-embeddings: embeddings.pkl
-	$(PYTHON) scripts/get_embeddings.py
+embeddings:
+	python scripts/aggregation/get_embeddings.py
 
 topic_modeling:
-	$(PYTHON) scripts/experiments/topic_modeling.py
+	pip install scipy==1.12.0
+	python scripts/experiments/topic_modeling.py
+	pip install scipy
 
 clustering:
-	$(PYTHON) scripts/experiments/clustering.py
+	python scripts/experiments/clustering.py
 
 api_data: 
 	cd api/data && uvicorn main:app --reload --port 8081
@@ -36,4 +32,9 @@ mlflow:
 	mlflow server --port 8083
 
 run_app:
-	cd arxiv_app && ../$(PYTHON) manage.py runserver
+	cd arxiv_app && python manage.py runserver
+
+qdrant:
+	docker run -p 6333:6333 -p 6334:6334 \
+	-v $(pwd)/qdrant_storage:/qdrant/storage:z \
+	qdrant/qdrant
