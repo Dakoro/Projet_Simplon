@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
-{% block content %} 
-
+{% block content %}
+<form action="" method="post">
+    {% csrf_token %}
+    <button type="submit">Clustering</button>
+</form>
+{% if request.method == "POST" %}
+    {{ graph | safe }}
+{% endif %}
 {% endblock content %}
