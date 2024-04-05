@@ -2,87 +2,31 @@ import os
 import pickle
 import torch
 import pandas as pd
-from transformers import AutoModelForMaskedLM, AutoTokenizer
+from pathlib import Path
 from langchain_community.document_loaders import DataFrameLoader
-from qdrant_client import QdrantClient, models
+from langchain.vectorstores.qdrant import Qdrant
 from openai import OpenAI
 from dotenv import load_dotenv
 
 load_dotenv()
 
-COLLECTION_NAME = 'hybrid_search'
+ROOT_DIR = Path(os.getcwd()).parent.parent
 OPENAI_KEY = os.getenv('OPENAI_KEY')
-model_id = "naver/splade-cocondenser-ensembledistil"
-
-tokenizer = AutoTokenizer.from_pretrained(model_id)
-model = AutoModelForMaskedLM.from_pretrained(model_id)
+QDRANT_URI = os.getenv('QDRANT_URI')
+COLLECTION_NAME = 'arxiv'
 
 openai_client = OpenAI(api_key=OPENAI_KEY)
 
-
-def compute_sparse_vector(text):
-    """
-    Computes a vector from logits and attention mask
-    using ReLU, log, and max operations.
-    """
-    tokens = tokenizer(text, return_tensors="pt")
-    output = model(**tokens)
-    logits, attention_mask = output.logits, tokens.attention_mask
-    relu_log = torch.log(1 + torch.relu(logits))
-    weighted_log = relu_log * attention_mask.unsqueeze(-1)
-    max_val, _ = torch.max(weighted_log, dim=1)
-    vec = max_val.squeeze()
-
-    return vec, tokens
-
-
-def qdrant_hybrid_search(client: QdrantClient, query_text, emb_model):
-    vec, _ = compute_sparse_vector(query_text)
-    cols = vec.nonzero().squeeze().cpu().tolist()
-    weights = vec[cols].cpu().tolist()
-    sparse_dict = dict(zip(cols, weights))
-    query_indices, query_values = (list(sparse_dict.keys()),
-                                   list(sparse_dict.values()))
-    query_dense_vector = emb_model.encode(query_text,
-                                          normalize_embeddings=True)
-    result = client.search_batch(
+def init_retriever(data, cached_embedder, k=10):
+    qdrant = Qdrant.from_documents(
+        data,
+        cached_embedder,
+        url=QDRANT_URI,
+        prefer_grpc=True,
         collection_name=COLLECTION_NAME,
-        requests=[
-            models.SearchRequest(
-                vector=models.NamedVector(
-                    name="text-dense",
-                    vector=query_dense_vector,
-                ),
-                limit=5,
-            ),
-            models.SearchRequest(
-                vector=models.NamedSparseVector(
-                    name="text-sparse",
-                    vector=models.SparseVector(
-                        indices=query_indices,
-                        values=query_values,
-                    ),
-                ),
-                limit=5,
-            ),
-        ],
+        force_recreate=True
     )
-
-    return result
-
-
-def retrieve_documents(result, data):
-    list_idx = []
-    for lst in result:
-        for r in lst:
-            idx = (r.model_dump()['id'], r.model_dump()['score'])
-            list_idx.append(idx)
-    result_query = []
-    for idx, d in enumerate(data, start=1):
-        for vec_id, _ in list_idx:
-            if idx == vec_id or 2*idx == vec_id:
-                result_query.append(d)
-    return result_query
+    return qdrant.as_retriever(search_type="mmr", search_kwargs={'k': k})
 
 
 def api_call(messages, model):
@@ -96,16 +40,14 @@ def api_call(messages, model):
 
 
 def get_data(fp):
-    df = pd.read_csv(fp)
+    df = pd.read_pickle(fp)
     df = df[['title', 'name', 'year', 'abstract']]
     return DataFrameLoader(df, page_content_column='abstract').load()
 
 
-def get_answer(client, query, embeddings, data):
-    result_search = qdrant_hybrid_search(client, query, embeddings)
-    relevant_docs = retrieve_documents(result_search, data)
+def get_answer(data, retriever, query):
+    relevant_docs = retriever.get_relevant_documents(query)
     context = '\n'.join([d.page_content for d in relevant_docs])
-    print(relevant_docs)
     messages = [
             {"role": "system", "content": "You are a helpful assistant."},
             {

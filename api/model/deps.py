@@ -1,3 +1,5 @@
+import os
+from pathlib import Path
 from datetime import datetime
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -6,19 +8,35 @@ from qdrant_client import QdrantClient
 from jose import jwt
 from pydantic import ValidationError
 from sentence_transformers import SentenceTransformer
+from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
+from langchain.embeddings import CacheBackedEmbeddings
+from langchain.storage import LocalFileStore
 from schemas import TokenPayload
-from utils.rag import get_answer, get_data, load_pickle
+from utils.rag import get_answer, get_data, load_pickle, init_retriever
 from utils.clustering import get_cluster_data
 from utils.auth import (
     ALGORITHM,
     JWT_SECRET_KEY
 )
 
-BERTOPIC_MODEL_PATH = "/home/dakoro/Projet_Simplon/models/bertopic"
+ROOT_DIR = Path(os.getcwd()).parent.parent
+BERTOPIC_MODEL_PATH = os.path.join(ROOT_DIR, 'models', 'bertopic')
+SAMPLE_PATH = os.path.join(ROOT_DIR, 'files', 'pkl', 'sample.pkl')
 EMB_MODEL = SentenceTransformer('BAAI/bge-large-en-v1.5')
+LANG_EMB_MODEL = SentenceTransformerEmbeddings(model_name='BAAI/bge-large-en-v1.5')
+STORE_PATH = os.path.join(ROOT_DIR, '.cache_emb')
+CACHE_STORE = LocalFileStore(STORE_PATH)
+TOPIC_OVER_TIME_PATH = os.path.join(ROOT_DIR, 'files', 'pkl', 'topic_over_time.pkl')
 
-data = get_data('/home/dakoro/Projet_Simplon/sample.csv')
-client = QdrantClient(host='localhost', port=6333)
+data = get_data(SAMPLE_PATH)
+
+cached_embedder = CacheBackedEmbeddings.from_bytes_store(
+        LANG_EMB_MODEL,
+        CACHE_STORE,
+        namespace=LANG_EMB_MODEL.model_name
+    )
+
+qdrant_retriever = init_retriever(data, cached_embedder, k=10)
 
 reuseable_oauth = OAuth2PasswordBearer(
     tokenUrl="/api/login",
@@ -56,7 +74,6 @@ async def get_secure_topic(
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    print()
     model = BERTopic().load(BERTOPIC_MODEL_PATH,
                             embedding_model=EMB_MODEL)
     topic, _ = model.transform([commons['abstract']])
@@ -93,10 +110,9 @@ async def get_secure_rag(
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    data = get_data('/home/dakoro/Projet_Simplon/sample.csv')
-    client = QdrantClient(host='localhost', port=6333)
+
     question = rag_params['question']
-    answer = get_answer(client, question, EMB_MODEL, data)
+    answer = get_answer(data, qdrant_retriever, question)
 
     if answer is None:
         raise HTTPException(
@@ -130,7 +146,7 @@ async def get_secure_topic_over_time(
         )
     model = BERTopic().load(BERTOPIC_MODEL_PATH,
                             embedding_model=EMB_MODEL)
-    path = '/home/dakoro/Projet_Simplon/topic_over_time.pkl'
+    path = TOPIC_OVER_TIME_PATH
     topic_over_time = load_pickle(path)
     fig = model.visualize_topics_over_time(topic_over_time,
                                            top_n_topics=20,
@@ -168,12 +184,11 @@ async def get_secure_cluster(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    cluster_data = get_cluster_data(data)
+    cluster_data = get_cluster_data()
 
     if cluster_data is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Could not find data",
         )
-
     return cluster_data

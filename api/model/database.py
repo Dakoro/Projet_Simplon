@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.ext.declarative import declarative_base
@@ -6,7 +7,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-BDD_URI = os.getenv('BDD_URI')
+ROOT_DIR = Path(os.getcwd()).parent.parent
+BDD_URI = os.path.join(ROOT_DIR, 'scripts', 'bdd', 'bdd.db')
 
 engine = create_engine(f'sqlite:///{BDD_URI}', echo=True)
 

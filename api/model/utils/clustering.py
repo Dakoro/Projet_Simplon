@@ -2,17 +2,19 @@ import os
 import mlflow
 import joblib
 import pandas as pd
+from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
 
-ROOT_DIR = os.getenv('ROOT_DIR')
+ROOT_DIR = Path(os.getcwd()).parent.parent
 MLFLOW_URI = os.getenv('MLFLOW_URI')
+KMEANS_URI = os.getenv('KMEANS_RUN_URI')
+
 mlflow.set_tracking_uri(uri=MLFLOW_URI)
-logged_model = 'runs:/f8cd5acc46b04985afb5a99f03144bad/KMeans_model'
-loaded_model = mlflow.pyfunc.load_model(logged_model)
+loaded_model = mlflow.pyfunc.load_model(KMEANS_URI)
 
 
-def get_cluster_data(data):
+def get_cluster_data():
     path = os.path.join(ROOT_DIR, 'files', 'pkl', 'umap_proj.pkl')
     with open(path, 'rb') as pklf:
         reduce_emb = joblib.load(pklf)

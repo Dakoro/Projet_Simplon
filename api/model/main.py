@@ -1,4 +1,6 @@
+import os
 import pandas as pd
+from pathlib import Path
 from sentence_transformers import SentenceTransformer
 from langchain_community.document_loaders import DataFrameLoader
 from qdrant_client import QdrantClient
@@ -25,18 +27,20 @@ from uuid import uuid4
 
 app = FastAPI(debug=True)
 
-BERTOPIC_MODEL_PATH = "/home/dakoro/Projet_Simplon/models/bertopic"
+ROOT_DIR = Path(os.getcwd()).parent.parent
 EMB_MODEL = SentenceTransformer('BAAI/bge-large-en-v1.5')
+BERTOPIC_MODEL_PATH = os.path.join(ROOT_DIR, 'models', 'bertopic')
+SAMPLE_PATH = os.path.join(ROOT_DIR, 'files', 'pkl', 'sample.pkl')
 
 
 def get_data(fp):
-    df = pd.read_csv(fp)
+    df = pd.read_pickle(fp)
     df = df[['title', 'name', 'year', 'abstract']]
     return DataFrameLoader(df, page_content_column='abstract').load()
 
 
-data = get_data('/home/dakoro/Projet_Simplon/sample.csv')
 client = QdrantClient(host='localhost', port=6333)
+data = get_data(SAMPLE_PATH)
 
 
 @app.get('/', response_class=RedirectResponse, include_in_schema=False)
@@ -59,9 +63,9 @@ async def rag(answer: str = Depends(get_secure_rag)):
     return answer
 
 
-@app.get('/api/clustering/')
+@app.get('/api/clustering')
 async def clustering(data: pd.DataFrame = Depends(get_secure_cluster)):
-    return data.to_json()
+    return data.to_dict()
 
 
 @app.post('/api/signup', summary="Create new user", response_model=UserOut)
@@ -95,11 +99,8 @@ async def create_user(data: UserAuth, db: Session = Depends(get_db)):
           response_model=TokenSchema)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(),
                 db: Session = Depends(get_db)):
-    print(form_data.username)
-    print(type(form_data.username))
     user = db.query(models.User).filter(
         models.User.username == form_data.username).first()
-    print(user)
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
