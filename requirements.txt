@@ -17,3 +17,9 @@ mlflow
 openai
 passlib
 python-jose
+gensim
+bertopic[spacy]
+nbformat
+django-tailwind
+django-tailwind[reload]
+
