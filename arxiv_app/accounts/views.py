@@ -30,15 +30,21 @@ def register(request):
 
                 signup_url = f'{API_MODEL_URL}/api/signup'
                 login_url = f'{API_MODEL_URL}/api/login'
+                
                 credentials = json.dumps({
                     "username": username,
                     "password": raw_password
                 })
+                
+                credentials_login = {
+                    "username": username,
+                    "password": raw_password
+                }
 
                 res_signup = requests.post(signup_url, data=credentials)
                 print(res_signup.content)
 
-                res_login = requests.post(login_url, data=credentials)
+                res_login = requests.post(login_url, data=credentials_login)
                 print(res_login.content)
 
                 messages.success(
@@ -64,13 +70,15 @@ def login_view(request):
         if user is not None:
             login(request=request, user=user)
             login_url = f'{API_MODEL_URL}/api/login'
-            credentials = json.dumps({
+            credentials = {
                 "username": username,
-                "password": password
-            })
+                "password": password,
+            }
 
             res_login = requests.post(login_url, data=credentials)
-            print(res_login.content)
+            token = res_login.json()['access_token']
+            request.session['token'] = token
+
             messages.success(request,
                              message=f"you are now logged in as {username}")
             return redirect('home')
