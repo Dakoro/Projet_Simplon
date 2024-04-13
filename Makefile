@@ -26,15 +26,37 @@ api_data:
 	cd api/data && uvicorn main:app --reload --port 8081
 
 api_model: 
-	cd api/model && uvicorn main:app --reload --port 8082
+	cd api/model && uvicorn main:app --reload --host 0.0.0.0 --port 8082
+
+api_model_container:
+	cd api/model && gunicorn main:app --timeout 60
+
+test-api:
+	cd api/model && pytest -vv
+
+local-api-container:
+	docker compose -f .local/docker-compose.yml up
+
+test-api-container:
+	docker compose -f .ci/docker-compose.test.yml up
 
 mlflow:
 	mlflow server --port 8083
+
+mlflow-server:
+	mlflow server \
+    --backend-store-uri sqlite:///mlflow/mlruns.db \
+	--artifacts-destination mlflow/mlruns \
+    --host 0.0.0.0 \
+    -p 8083
 
 run_app:
 	cd arxiv_app && python manage.py runserver
 
 qdrant:
 	docker run -p 6333:6333 -p 6334:6334 \
-	-v $(pwd)/qdrant_storage:/qdrant/storage:z \
+	-v $(pwd)/qdrant_storage:/qdrant/storage\
 	qdrant/qdrant
+
+prune-docker:
+	docker system prune --all --volumes
