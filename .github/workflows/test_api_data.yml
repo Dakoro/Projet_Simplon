@@ -6,7 +6,6 @@ jobs:
   test:
     name: Run Tests for the Data Api
     runs-on: ubuntu-latest
-    environment: test_env
 
     steps:
     - name: Checkout code
@@ -25,7 +24,7 @@ jobs:
 
     - name: Run tests
       env:
-        JWT_SECRET_KEY: ${{ vars.JWT_SECRET_KEY }}
-        JWT_REFRESH_SECRET_KEY: ${{ vars.JWT_REFRESH_SECRET_KEY }}
+        JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+        JWT_REFRESH_SECRET_KEY: ${{ secrets.JWT_REFRESH_SECRET_KEY }}
       run: |
         pytest -vv api/data/test_api.py

@@ -40,6 +40,9 @@ local-api-container:
 test-api-container:
 	docker compose -f .ci/docker-compose.test.yml up -d
 
+docker-push:
+	docker compose -f .ci/docker-compose.test.yml push
+
 mlflow:
 	mlflow server --port 8083
 

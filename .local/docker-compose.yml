@@ -1,16 +1,4 @@
 services:
-  api:
-    build:
-      context: ..
-      dockerfile: api/model/Dockerfile
-    container_name: api_model
-    ports: 
-      - "8082:8082"
-    expose:
-      - 8082
-    depends_on:
-      - qdrant
-      - mlflow
   qdrant:
     image: qdrant/qdrant
     container_name: qdrant_store
