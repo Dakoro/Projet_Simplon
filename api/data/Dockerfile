@@ -6,11 +6,11 @@ WORKDIR /
 
 
 COPY api/data .
-COPY bdd.db .
+COPY scripts/bdd/bdd.db .
 
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-ENV BDD_URI=./bdd.db
+ENV BDD_URI=scripts/bdd/bdd.db
 
 EXPOSE 3100
 
