@@ -23,12 +23,13 @@ jobs:
         pip install --no-cache-dir pytest
       
     - name: build mlflow
-      uses: docker/build-push-action@v1
+      uses: docker/setup-buildx-action@v3
       with:
         registry: ghcr.io
         username: "dakoro"
         password: ${{ secrets.PAT }}
-        repository: dakoro/mlflow
+        context: "{{defaultContext}}:mlflow"
+        repository: dakoro/projet_simplon/mflow
         tags: latest
       
     - name: build qdrant
@@ -37,7 +38,7 @@ jobs:
         registry: ghcr.io
         username: "dakoro"
         password: ${{ secrets.PAT }}
-        repository: dakoro/qdrant
+        repository: dakoro/projet_simplon/qdrant
         tags: latest
 
     - name: Run tests
