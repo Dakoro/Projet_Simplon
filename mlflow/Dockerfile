@@ -1,0 +1,15 @@
+FROM python:3.10-slim-buster
+
+WORKDIR /
+
+COPY ./mlflow ./mlflow
+COPY ./Makefile .
+
+RUN apt-get update
+RUN apt-get install make
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir --upgrade mlflow
+
+EXPOSE 8083
+
+CMD ["make", "mlflow-server"]

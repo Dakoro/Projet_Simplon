@@ -10,7 +10,7 @@ from sklearn.metrics import silhouette_score
 load_dotenv()
 
 ROOT_DIR = os.getcwd()
-MFLOW_URI = os.getenv('MLFLOW_URI')
+MFLOW_URI = os.getenv('MLFLOW_TRACKING_URI')
 EMB_PATH = os.path.join(ROOT_DIR, 'files', 'pkl', 'embeddings.pkl')
 
 mlflow.set_tracking_uri(uri=MFLOW_URI)
@@ -59,6 +59,7 @@ def main():
         mlflow.sklearn.log_model(
             sk_model=best_model,
             artifact_path="KMeans_model",
+            registered_model_name="KMeans_model",
             signature=signature)
         reducer_path = os.path.join(ROOT_DIR,
                                     'files',

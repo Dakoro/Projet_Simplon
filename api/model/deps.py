@@ -74,6 +74,11 @@ async def get_secure_topic(
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    if not isinstance(commons['abstract'], str):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="parameter must be a string",
+        )
     model = BERTopic().load(BERTOPIC_MODEL_PATH,
                             embedding_model=EMB_MODEL)
     topic, _ = model.transform([commons['abstract']])
@@ -82,9 +87,8 @@ async def get_secure_topic(
     if result is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Could not find data",
+            detail="Couldn't infer topic",
         )
-
     return result
 
 

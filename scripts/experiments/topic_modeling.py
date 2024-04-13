@@ -23,7 +23,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 ROOT_DIR = os.getcwd()
-MLFLOW_URI = os.getenv('MLFLOW_URI')
+MLFLOW_URI = os.getenv('MLFLOW_TRACKING_URI')
 SAMPLE_PATH = os.path.join(ROOT_DIR, 'files', 'pkl', 'sample.pkl')
 EMB_PATH = os.path.join(ROOT_DIR, 'files', 'pkl', 'embeddings.pkl')
 
