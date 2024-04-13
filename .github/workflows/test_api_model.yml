@@ -23,7 +23,7 @@ jobs:
         pip install -r api/model/requirements.txt
         pip install pytest
       
-      name: build test-container
+    - name: build test-container
       run: make test-api-container
 
     - name: Run tests
