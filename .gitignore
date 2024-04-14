@@ -171,15 +171,8 @@ logs/*.txt
 *.db
 *.pkl
 
-# models
-models
-
 # images
 imgs
-
-# Mlflow
-mlruns
-mlartifacts
 
 # Tailwind 
 theme
