@@ -9,8 +9,7 @@ from jose import jwt
 from pydantic import ValidationError
 from sentence_transformers import SentenceTransformer
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
-from langchain.embeddings import CacheBackedEmbeddings
-from langchain.storage import LocalFileStore
+from qdrant_client.qdrant_client import QdrantClient
 from schemas import TokenPayload
 from utils.rag import get_answer, get_data, load_pickle, init_retriever
 from utils.clustering import get_cluster_data
@@ -21,22 +20,19 @@ from utils.auth import (
 
 ROOT_DIR = Path(os.getcwd()).parent.parent
 BERTOPIC_MODEL_PATH = os.path.join(ROOT_DIR, 'models', 'bertopic')
-SAMPLE_PATH = os.path.join(ROOT_DIR, 'files', 'pkl', 'sample.pkl')
 EMB_MODEL = SentenceTransformer('BAAI/bge-large-en-v1.5')
 LANG_EMB_MODEL = SentenceTransformerEmbeddings(model_name='BAAI/bge-large-en-v1.5')
-STORE_PATH = os.path.join(ROOT_DIR, '.cache_emb')
-CACHE_STORE = LocalFileStore(STORE_PATH)
 TOPIC_OVER_TIME_PATH = os.path.join(ROOT_DIR, 'files', 'pkl', 'topic_over_time.pkl')
+QDRANT_URI = os.getenv('QDRANT_URI')
+QDRANT_API_KEY = os.getenv('QDRANT_API_KEY')
 
-data = get_data(SAMPLE_PATH)
+client = QdrantClient(
+    url=QDRANT_URI,
+    api_key=QDRANT_API_KEY,
+    prefer_grpc=True
+)
 
-cached_embedder = CacheBackedEmbeddings.from_bytes_store(
-        LANG_EMB_MODEL,
-        CACHE_STORE,
-        namespace=LANG_EMB_MODEL.model_name
-    )
-
-qdrant_retriever = init_retriever(data, cached_embedder, k=10)
+qdrant_retriever = init_retriever(client, LANG_EMB_MODEL, k=10)
 
 reuseable_oauth = OAuth2PasswordBearer(
     tokenUrl="/api/login",
@@ -116,7 +112,7 @@ async def get_secure_rag(
         )
 
     question = rag_params['question']
-    answer = get_answer(data, qdrant_retriever, question)
+    answer = get_answer(qdrant_retriever, question)
 
     if answer is None:
         raise HTTPException(

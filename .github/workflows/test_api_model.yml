@@ -21,13 +21,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install --no-cache-dir -r api/model/requirements.txt
         pip install --no-cache-dir pytest
-    
-    - name: Login to GitHub Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.PAT }}
       
     - name: build and run container
       run: make test-api-container
@@ -39,6 +32,6 @@ jobs:
         OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
         MLFLOW_URI: ${{ secrets.MLFLOW_URI }}
         QDRANT_URI: ${{ secrets.QDRANT_URI }}
-        KMEANS_RUN_URI: ${{ secrets.KMEANS_RUN_URI }}
+        QDRANT_API_KEY: ${{ secrets.QDRANT_API_KEY }}
       run: |
         cd api/model && pytest -vv

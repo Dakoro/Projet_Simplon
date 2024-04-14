@@ -17,14 +17,11 @@ COLLECTION_NAME = 'arxiv'
 
 openai_client = OpenAI(api_key=OPENAI_KEY)
 
-def init_retriever(data, cached_embedder, k=10):
-    qdrant = Qdrant.from_documents(
-        data,
-        cached_embedder,
-        url=QDRANT_URI,
-        prefer_grpc=True,
-        collection_name=COLLECTION_NAME,
-        force_recreate=True
+def init_retriever(client, embeddings, k=10):
+    qdrant = Qdrant(
+        client=client,
+        embeddings=embeddings,
+        collection_name='abstracts'
     )
     return qdrant.as_retriever(search_type="mmr", search_kwargs={'k': k})
 
@@ -45,7 +42,7 @@ def get_data(fp):
     return DataFrameLoader(df, page_content_column='abstract').load()
 
 
-def get_answer(data, retriever, query):
+def get_answer(retriever, query):
     relevant_docs = retriever.get_relevant_documents(query)
     context = '\n'.join([d.page_content for d in relevant_docs])
     messages = [
