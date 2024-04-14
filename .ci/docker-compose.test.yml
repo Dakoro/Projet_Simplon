@@ -1,6 +1,6 @@
 services:
   qdrant:
-    image: qdrant/qdrant
+    image: ghcr.io/dakoro/projet_simplon/qdrant
     container_name: qdrant_store
     build: 
       context: ..
@@ -10,16 +10,12 @@ services:
     expose:
       - 6333
       - 6334
-    volumes:
-      - ../qdrant_storage:/qdrant/storage
   mlflow:
+    image: ghcr.io/dakoro/projet_simplon/mflow
     build:
       context: ..
       dockerfile: mlflow/Dockerfile
-    container_name: mlflow-server
     ports:
      - "8083:8083"
     expose:
       - 8083
-    volumes:
-      - ../mlflow:/mlflow
