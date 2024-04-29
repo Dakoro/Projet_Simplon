@@ -46,7 +46,6 @@ mlflow:
 mlflow-server:
 	mlflow server \
     --backend-store-uri sqlite:///mlflow/mlruns.db \
-	--artifacts-destination mlflow/mlruns \
 	--default-artifact-root mlflow/mlruns \
     --host 0.0.0.0 \
     -p 8083
