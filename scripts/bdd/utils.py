@@ -4,7 +4,6 @@ import re
 import json
 import arxiv
 import pandas as pd
-from pathlib import Path
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 from dotenv import load_dotenv

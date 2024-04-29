@@ -1,6 +1,5 @@
 import os
 import pickle
-import torch
 import pandas as pd
 from pathlib import Path
 from langchain_community.document_loaders import DataFrameLoader

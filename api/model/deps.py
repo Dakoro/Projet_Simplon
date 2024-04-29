@@ -9,9 +9,8 @@ from jose import jwt
 from pydantic import ValidationError
 from sentence_transformers import SentenceTransformer
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
-from qdrant_client.qdrant_client import QdrantClient
 from schemas import TokenPayload
-from utils.rag import get_answer, get_data, load_pickle, init_retriever
+from utils.rag import get_answer, load_pickle, init_retriever
 from utils.clustering import get_cluster_data
 from utils.auth import (
     ALGORITHM,
