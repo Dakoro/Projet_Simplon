@@ -50,10 +50,5 @@ mlflow-server:
 run_app:
 	cd arxiv_app && python manage.py runserver
 
-qdrant:
-	docker run -p 6333:6333 -p 6334:6334 \
-	-v $(pwd)/qdrant_storage:/qdrant/storage\
-	qdrant/qdrant
-
 prune-docker:
 	docker system prune --all --volumes
