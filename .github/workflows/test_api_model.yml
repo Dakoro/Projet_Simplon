@@ -6,6 +6,16 @@ jobs:
   test:
     name: Run Tests for the Model Api
     runs-on: ubuntu-latest
+    container: ubuntu
+    services:
+      mlflow:
+        build:
+          context: ..
+          dockerfile: ./docker/Dockerfile.mlflow
+        ports:
+        - 8083:8083
+        expose:
+        - 8083
 
     steps:
     - name: Checkout code
@@ -21,10 +31,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install --no-cache-dir -r api/model/requirements.txt
         pip install --no-cache-dir pytest
-    
-    - name: Launch mlflow container
-      run: |
-        make test-api-container
 
     - name: Run tests
       env:
