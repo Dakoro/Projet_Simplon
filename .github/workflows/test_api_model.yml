@@ -9,9 +9,7 @@ jobs:
     container: ubuntu
     services:
       mlflow:
-        build:
-          context: ..
-          dockerfile: docker/Dockerfile.mlflow
+        image: ghcr.io/dakoro/projet_simplon/mflow:latest
         ports:
         - 8083:8083
 
