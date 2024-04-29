@@ -21,6 +21,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install --no-cache-dir -r api/model/requirements.txt
         pip install --no-cache-dir pytest
+    
+    - name: Launch mlflow server:
+      run: |
+        make mflow-server
 
     - name: Run tests
       env:
@@ -31,4 +35,4 @@ jobs:
         QDRANT_URI: ${{ secrets.QDRANT_URI }}
         QDRANT_API_KEY: ${{ secrets.QDRANT_API_KEY }}
       run: |
-        cd api/model && pytest -vv
+        make test-api
