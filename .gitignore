@@ -170,7 +170,8 @@ logs/*.log
 logs/*.txt
 *.csv
 *.ipynb
-*.db
+scripts/bdd/bdd.db
+api/model/test.db
 
 # images
 imgs
