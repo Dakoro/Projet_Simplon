@@ -1,19 +1,23 @@
 import os
 import pytest
+import sqlite3
 import sqlalchemy as sa
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import sessionmaker
 from models import User
-
 from database import Base
 from main import app
 from database import get_db
 
 ROOT_DIR = os.getcwd()
 TEST_BDD_URI = os.path.join(ROOT_DIR, 'test.db')
+
 if not os.path.exists(TEST_BDD_URI):
-    f = open(TEST_BDD_URI)
-    f.close()
+    with sqlite3.connect(TEST_BDD_URI) as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT SQLITE_VERSION()')
+        data = cursor.fetchone()
+        print('SQLite version:', data)
 
 SQLALCHEMY_DATABASE_URL = f"sqlite:///{TEST_BDD_URI}"
 
