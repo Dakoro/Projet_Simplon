@@ -24,7 +24,7 @@ jobs:
     
     - name: Launch mlflow server
       run: |
-        make mflow-server
+        make mlflow-server
 
     - name: Run tests
       env:
