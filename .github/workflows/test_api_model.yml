@@ -22,7 +22,7 @@ jobs:
         pip install --no-cache-dir -r api/model/requirements.txt
         pip install --no-cache-dir pytest
     
-    - name: Launch mlflow server:
+    - name: Launch mlflow server
       run: |
         make mflow-server
 
