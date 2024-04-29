@@ -40,9 +40,6 @@ local-api-container:
 test-api-container:
 	docker compose -f .ci/docker-compose.yml up -d
 
-mlflow:
-	mlflow server --port 8083
-
 mlflow-server:
 	mlflow server \
     --backend-store-uri sqlite:///mlflow/mlruns.db \

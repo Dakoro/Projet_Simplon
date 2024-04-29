@@ -21,9 +21,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install --no-cache-dir -r api/model/requirements.txt
         pip install --no-cache-dir pytest
-      
-    - name: build and run container
-      run: make test-api-container
 
     - name: Run tests
       env:
