@@ -2,7 +2,7 @@ services:
   mlflow:
     build:
       context: ..
-      dockerfile: ./mlflow/Dockerfile
+      dockerfile: ./docker/Dockerfile.mlflow
     container_name: mlflow-server
     ports:
      - "8083:8083"
@@ -10,3 +10,13 @@ services:
       - 8083
     volumes:
       - ../mlflow:/mlflow
+  
+  api-model:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.api_model
+    container_name: api-model
+    ports:
+      - "8082:8082"
+    expose:
+      - 8082
