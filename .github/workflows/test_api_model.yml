@@ -30,7 +30,7 @@ jobs:
         JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         JWT_REFRESH_SECRET_KEY: ${{ secrets.JWT_REFRESH_SECRET_KEY }}
         OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
-        MLFLOW_URI: ${{ secrets.MLFLOW_URI }}
+        MLFLOW_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
         QDRANT_URI: ${{ secrets.QDRANT_URI }}
         QDRANT_API_KEY: ${{ secrets.QDRANT_API_KEY }}
       run: |
