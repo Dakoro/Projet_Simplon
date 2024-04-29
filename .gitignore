@@ -160,7 +160,9 @@ cython_debug/
 #.idea/
 
 # Data_source
-data_source
+data_source/arxiv-metadata-oai-snapshot.json
+data_source/database.sqlite
+data_source/doc_scraping.html
 chroma_storage
 backup.sql
 qdrant_storage/**
@@ -169,12 +171,14 @@ logs/*.txt
 *.csv
 *.ipynb
 *.db
-*.pkl
 
 # images
 imgs
 
 # Tailwind 
 theme
-.cache_emb
+.cache_emb/BAAI
+files/pkl/aggreated_data.pkl
+files/pkl/embeddings.pkl
+files/pkl/sample.pkl
 
