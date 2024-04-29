@@ -32,7 +32,7 @@ api_model_container:
 	cd api/model && gunicorn main:app --timeout 60
 
 test-api:
-	cd api/model && pytest -s
+	cd api/model && pytest -vv
 
 local-api-container:
 	docker compose -f .local/docker-compose.yml up
