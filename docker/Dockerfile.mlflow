@@ -8,8 +8,6 @@ COPY ./Makefile .
 RUN apt-get update
 RUN apt-get install make
 RUN pip install --upgrade pip
-RUN pip install --no-cache-dir --upgrade mlflow
-
-EXPOSE 8083
+RUN pip install --no-cache-dir mlflow
 
 CMD ["make", "mlflow-server"]
