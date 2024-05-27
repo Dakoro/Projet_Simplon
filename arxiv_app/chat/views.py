@@ -5,6 +5,7 @@ import plotly.express as px
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Message
+from .utils import make_ssn
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -83,3 +84,13 @@ def get_clustering(request):
         context['graph'] = fig.to_html(full_html=False)
         return render(request, 'chat/clustering.html', context)
     return render(request, 'chat/clustering.html')
+
+
+@login_required
+def semantic_graph(request):
+    if request.method == "POST":
+        fn = request.POST['arxiv_id']
+        print(fn)
+        make_ssn(fn)
+    graph_url = "http://localhos:"
+    return render(request, "semantic_graph")

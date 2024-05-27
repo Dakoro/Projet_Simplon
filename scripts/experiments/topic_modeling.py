@@ -1,6 +1,5 @@
 import os
 import mlflow
-import pickle
 import pandas as pd
 import openai
 from bertopic import BERTopic
@@ -19,7 +18,6 @@ from bertopic.representation import (
     PartOfSpeech
 )
 
-from dotenv import load_dotenv
 load_dotenv()
 
 ROOT_DIR = os.getcwd()
