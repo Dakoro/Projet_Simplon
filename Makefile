@@ -26,29 +26,38 @@ api_data:
 	cd api/data && uvicorn main:app --reload --port 8081
 
 api_model: 
-	cd api/model && uvicorn main:app --reload --host 0.0.0.0 --port 8082
+	cd api/model && sleep 60 && uvicorn main:app --reload --host 0.0.0.0 --port 8082
 
 api_model_container:
 	cd api/model && gunicorn main:app --timeout 60
 
-test-api:
+test-api-data:
+	cd api/data && pytest -vv
+
+test-api-model:
 	cd api/model && pytest -vv
 
 local-api-container:
-	docker compose -f .local/docker-compose.yml up
-
-test-api-container:
-	docker compose -f .ci/docker-compose.yml up -d
+	docker compose -f .ci/docker-compose.yml up
 
 mlflow-server:
 	mlflow server \
-    --backend-store-uri sqlite:///mlflow/mlruns.db \
-	--default-artifact-root mlflow/mlruns \
+    --backend-store-uri sqlite:///mlflow/tracking.db \
+	--artifacts-destination mlflow/artifact \
     --host 0.0.0.0 \
     -p 8083
 
 run_app:
 	cd arxiv_app && python manage.py runserver
 
-prune-docker:
+docker-purge:
 	docker system prune --all --volumes
+
+grobid-container:
+	docker run --rm --gpus all --init --ulimit core=0 -p 8070:8070 grobid/grobid:0.8.0
+
+get-pdfs:
+	python grobid/get_pdfs.py
+
+pdf-processing:
+	python grobid/process_pdf.py
