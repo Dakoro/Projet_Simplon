@@ -3,20 +3,34 @@ services:
     build:
       context: ..
       dockerfile: ./docker/Dockerfile.mlflow
-    container_name: mlflow-server
+    container_name: mlflow
+    environment:
+      GUNICORN_CMD_ARGS: "--log-level debug"
     ports:
-     - "8083:8083"
+      - "8083:8083"
     expose:
       - 8083
     volumes:
       - ../mlflow:/mlflow
+    networks:
+      - arxiv
   
   api-model:
     build:
       context: ..
       dockerfile: ./docker/Dockerfile.api_model
     container_name: api-model
+    depends_on:
+      - mlflow
     ports:
       - "8082:8082"
     expose:
       - 8082
+      - 8083
+    networks:
+      - arxiv
+
+networks:
+  arxiv:
+    name: arxiv
+    driver: bridge

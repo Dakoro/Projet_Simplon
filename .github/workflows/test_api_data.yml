@@ -1,6 +1,9 @@
 name: Test Api Data
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   test:
@@ -27,4 +30,4 @@ jobs:
         JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         JWT_REFRESH_SECRET_KEY: ${{ secrets.JWT_REFRESH_SECRET_KEY }}
       run: |
-        pytest -vv api/data/test_api.py
+        make test-api-data

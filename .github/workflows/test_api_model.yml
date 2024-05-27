@@ -39,4 +39,4 @@ jobs:
         QDRANT_URI: ${{ secrets.QDRANT_URI }}
         QDRANT_API_KEY: ${{ secrets.QDRANT_API_KEY }}
       run: |
-        make test-api
+        make test-api-model

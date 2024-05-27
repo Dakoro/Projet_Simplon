@@ -5,5 +5,7 @@ services:
       dockerfile: ./docker/Dockerfile.mlflow
     ports:
      - 8083:8083
+    environment:
+      GUNICORN_CMD_ARGS: "--log-level debug"
     expose:
      - 8083
