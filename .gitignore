@@ -173,6 +173,7 @@ logs/*.txt
 *.pdf
 scripts/bdd/bdd.db
 api/model/test.db
+api/data/test.db
 
 # images
 imgs
@@ -183,4 +184,10 @@ theme
 files/pkl/aggreated_data.pkl
 files/pkl/embeddings.pkl
 files/pkl/sample.pkl
+
+# Grobid
+tmp
+grobid_outputs
+pdfs_text
+pdfs/chunks/*.pkl
 

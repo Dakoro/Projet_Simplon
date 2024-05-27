@@ -15,3 +15,5 @@ logs/
 
 # Exclude aggregated_data.pkl
 files/pkl/aggreated_data.pkl
+files/pkl/sample.pkl
+files/pkl/embeddings.pkl
