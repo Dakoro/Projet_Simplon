@@ -7,7 +7,6 @@ WORKDIR /
 
 COPY ../api/model ./api/model
 COPY ../models ./models
-COPY ../.cache_emb ./.cache_emb
 COPY ../files/pkl ./files/pkl
 COPY ../.env .
 COPY ../Makefile .
