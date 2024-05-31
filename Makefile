@@ -26,7 +26,7 @@ api_data:
 	cd api/data && uvicorn main:app --reload --port 8081
 
 api_model: 
-	cd api/model && sleep 60 && uvicorn main:app --reload --host 0.0.0.0 --port 8082
+	cd api/model && uvicorn main:app --reload --host 0.0.0.0 --port 8082
 
 api_model_container:
 	cd api/model && gunicorn main:app --timeout 60
@@ -37,8 +37,16 @@ test-api-data:
 test-api-model:
 	cd api/model && pytest -vv
 
-local-api-container:
+remote-api-container:
 	docker compose -f .ci/docker-compose.yml up
+
+local-api-container:
+	docker compose -f .local/docker-compose.yml up
+
+local-qdrant:
+	docker run -p 6333:6333 -p 6334:6334 \
+    -v $(pwd)/qdrant_storage:/qdrant/storage:z \
+    qdrant/qdrant
 
 mlflow-server:
 	mlflow server \
@@ -61,3 +69,6 @@ get-pdfs:
 
 pdf-processing:
 	python grobid/process_pdf.py
+
+load_qdrant_grobid:
+	python grobid/load_qdrant_grobid.py

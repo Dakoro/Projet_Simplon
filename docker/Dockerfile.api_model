@@ -15,4 +15,4 @@ RUN pip install --no-cache-dir --upgrade -r ../api/model/requirements.txt
 
 EXPOSE 8082
 
-CMD ["make", "api_model"]
+CMD ["make", "api_model_container"]
