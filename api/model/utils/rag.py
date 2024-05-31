@@ -1,8 +1,6 @@
 import os
 import pickle
-import pandas as pd
 from pathlib import Path
-from langchain_community.document_loaders import DataFrameLoader
 from langchain.vectorstores.qdrant import Qdrant
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -12,7 +10,6 @@ load_dotenv()
 ROOT_DIR = Path(os.getcwd()).parent.parent
 OPENAI_KEY = os.getenv('OPENAI_KEY')
 QDRANT_URI = os.getenv('QDRANT_URI')
-COLLECTION_NAME = 'arxiv'
 
 openai_client = OpenAI(api_key=OPENAI_KEY)
 
@@ -20,7 +17,7 @@ def init_retriever(client, embeddings, k=10):
     qdrant = Qdrant(
         client=client,
         embeddings=embeddings,
-        collection_name='abstracts'
+        collection_name='Papers'
     )
     return qdrant.as_retriever(search_type="mmr", search_kwargs={'k': k})
 
@@ -30,15 +27,15 @@ def api_call(messages, model):
         model=model,
         messages=messages,
         stop=["\n\n"],
-        max_tokens=100,
+        max_tokens=200,
         temperature=0.0,
     )
 
 
-def get_data(fp):
-    df = pd.read_pickle(fp)
-    df = df[['title', 'name', 'year', 'abstract']]
-    return DataFrameLoader(df, page_content_column='abstract').load()
+# def get_data(fp):
+#     df = pd.read_pickle(fp)
+#     df = df[['title', 'name', 'year', 'abstract']]
+#     return DataFrameLoader(df, page_content_column='abstract').load()
 
 
 def get_answer(retriever, query):
