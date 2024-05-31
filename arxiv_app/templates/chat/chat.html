@@ -25,5 +25,15 @@
             </button>
         </div>
     </form>
+    {% if request.method == 'POST' %}
+        <div class="docs">
+            {% for image in images %}
+                <a href="{{ image.0 }}" target="_blank">
+                    <h2>{{ image.1 }}</h2>
+                </a>
+                <img src="data:image/png;base64, {{ image.2 }}" alt="">
+            {% endfor %}
+        </div>
+    {% endif %}
 </div>
 {% endblock content %}
