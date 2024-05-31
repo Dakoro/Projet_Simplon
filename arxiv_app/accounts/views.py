@@ -76,11 +76,19 @@ def login_view(request):
             }
 
             res_login = requests.post(login_url, data=credentials)
-            token = res_login.json()['access_token']
-            request.session['token'] = token
+            print(res_login.status_code)
+            if res_login.status_code == 200:
+                print(res_login.json())
+                token = res_login.json()['access_token']
+                request.session['token'] = token
 
-            messages.success(request,
-                             message=f"you are now logged in as {username}")
+                messages.success(request,
+                                message=f"you are now logged in as {username}")
+                return redirect('home')
+            else:
+                messages.error(request,
+                               message='logging failed')
+                return redirect('home')
             return redirect('home')
         else:
             messages.error(request,

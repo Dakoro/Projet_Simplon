@@ -5,7 +5,7 @@ import plotly.express as px
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Message
-from .utils import make_ssn
+from .utils import get_coord, get_images
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -29,14 +29,17 @@ def chat(request):
         question = request.POST.get('question')
         auth = set_api_auth(request)
         rag_res = requests.post(RAG_URL, params={"question": question}, headers=auth)
-        data = rag_res.json()
-        ai_res = data['openai']['choices'][0]['message']
-        print(ai_res['content'])
-        relevants_docs = data['relevants_docs']
-        context['relevants_docs'] = relevants_docs
-        print('\n\n'.join([d['page_content'] for d in relevants_docs]))
-        Message.objects.create(user_message=question,
-                               bot_message=ai_res['content'])
+        if rag_res.status_code == 200:
+            data = rag_res.json()
+            ai_res = data['openai']['choices'][0]['message']
+            relevants_docs = data['relevants_docs']
+            coord_dict = get_coord(relevants_docs)
+            images = get_images(coord_dict)
+            context['images'] = images
+            Message.objects.create(user_message=question,
+                                bot_message=ai_res['content'])
+        else:
+            print(f"error, Status code: {rag_res.status_code}")
     messages = Message.objects.all()
     context['messages'] = messages
     return render(request, 'chat/chat.html', context)
@@ -60,8 +63,8 @@ def get_topic_over_time(request):
     context = {}
     if request.method == 'POST':
         auth = set_api_auth(request)
-        topic_over_timi_path = os.path.join(BERTOPIC_URL, 'topic_over_time')
-        response = requests.get(topic_over_timi_path, headers=auth)
+        topic_over_time_path = os.path.join(BERTOPIC_URL, 'topic_over_time')
+        response = requests.get(topic_over_time_path, headers=auth)
         context['graph'] = response.json()
         return render(request, 'chat/topic_over_time.html', context=context)
     return render(request, 'chat/topic_over_time.html')
@@ -84,13 +87,3 @@ def get_clustering(request):
         context['graph'] = fig.to_html(full_html=False)
         return render(request, 'chat/clustering.html', context)
     return render(request, 'chat/clustering.html')
-
-
-@login_required
-def semantic_graph(request):
-    if request.method == "POST":
-        fn = request.POST['arxiv_id']
-        print(fn)
-        make_ssn(fn)
-    graph_url = "http://localhos:"
-    return render(request, "semantic_graph")

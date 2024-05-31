@@ -8,5 +8,4 @@ urlpatterns = [
     path("topic/", views.get_topic, name='get_topic'),
     path('clustering/', views.get_clustering, name="get_clustering"),
     path("topic_over_time/", views.get_topic_over_time, name='topic_over_time'),
-    path("semantic/", views.semantic_graph, name='semantic_graph'),
 ]
