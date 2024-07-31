@@ -29,6 +29,7 @@ def api_call(messages, model):
         stop=["\n\n"],
         max_tokens=200,
         temperature=0.0,
+        logprobs=True,
     )
 
 

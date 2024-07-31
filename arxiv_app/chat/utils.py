@@ -110,4 +110,12 @@ def get_images(coord_dict):
         images.append((pdf_url, title, base64_img))
     return images
 
+
+def get_rag_score(logprobs):
+    scores = []
+    for logprob in logprobs:
+        print(logprob)
+        scores.append(np.round(np.exp(logprob['logprob'])*100,2))
+    return np.mean(scores)
+
     

@@ -5,7 +5,7 @@ import plotly.express as px
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Message
-from .utils import get_coord, get_images
+from .utils import get_coord, get_images, get_rag_score
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -32,12 +32,16 @@ def chat(request):
         if rag_res.status_code == 200:
             data = rag_res.json()
             ai_res = data['openai']['choices'][0]['message']
+            logprobs = data['openai']['choices'][0]['logprobs']['content']
+            rag_score = get_rag_score(logprobs)
             relevants_docs = data['relevants_docs']
             coord_dict = get_coord(relevants_docs)
             images = get_images(coord_dict)
             context['images'] = images
-            Message.objects.create(user_message=question,
-                                bot_message=ai_res['content'])
+            Message.objects.create(
+                user_message=question,
+                bot_message=ai_res['content'],
+                rag_score=rag_score)
         else:
             print(f"error, Status code: {rag_res.status_code}")
     messages = Message.objects.all()
@@ -79,6 +83,7 @@ def get_clustering(request):
         response = requests.get(clustring_url, headers=auth)
         data = response.json()
         df = pd.DataFrame.from_dict(data)
+        print(df)
         fig = px.scatter_3d(df,
                             x='proj_x',
                             y='proj_y',

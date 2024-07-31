@@ -162,6 +162,13 @@ def test_ping(client):
 
 
 def test_topic_over_time(client, session, token):
+    """test of /api/inference/bertopic/topic_over_time
+
+    Args:
+        client (Any): test client
+        session (Any): session object, contains all session data
+        token (str): authentification token
+    """
     endpoint = "/api/inference/bertopic/topic_over_time"
     auth = {
         "Authorization": f"Bearer {token}"
@@ -173,6 +180,14 @@ def test_topic_over_time(client, session, token):
 
 
 def test_topic(client, session, token):
+    """test of /api/inference/bertopic endpoint
+    
+    Args:
+        client (Any): test client
+        session (Any): session object, contains all session data
+        token (str): authentification token
+    """
+    
     endpoint = "/api/inference/bertopic"
     auth = {
         "Authorization": f"Bearer {token}"
@@ -193,6 +208,14 @@ def test_topic(client, session, token):
 
 
 def test_clustering(client, session, token):
+    """test for /api/clustering endpoint
+
+
+    Args:
+        client (Any): test client
+        session (Any): session object, contains all session variables
+        token (str): authentification token
+    """
     endpoint = "/api/clustering"
     auth = {
         "Authorization": f"Bearer {token}"
@@ -206,6 +229,14 @@ def test_clustering(client, session, token):
 
 
 def test_rag(client, session, token):
+    """test for /api/inference/rag endpoint
+
+
+    Args:
+        client (Any): test client
+        session (Any): session object, contains all session variables
+        token (str): authentification token
+    """
     endpoint = "/api/inference/rag"
     auth = {
         "Authorization": f"Bearer {token}"
