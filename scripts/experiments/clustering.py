@@ -1,6 +1,7 @@
 import os
 import mlflow
-import joblib
+import pickle
+import pandas as pd
 from mlflow.models import infer_signature
 from dotenv import load_dotenv
 from utils import load_embeddings
@@ -12,6 +13,7 @@ load_dotenv()
 ROOT_DIR = os.getcwd()
 MFLOW_URI = os.getenv('MLFLOW_TRACKING_URI')
 EMB_PATH = os.path.join(ROOT_DIR, 'files', 'pkl', 'embeddings.pkl')
+SAMPLE_PATH = os.path.join(ROOT_DIR, 'files', 'pkl', 'sample.pkl')
 
 mlflow.set_tracking_uri(uri=MFLOW_URI)
 mlflow.set_experiment("Clustering")
@@ -42,9 +44,9 @@ def get_best_k(K, silhouette_scores):
 
 
 def main():
-    K = range(2, 10, 1)
+    K = range(3, 15, 1)
     embeddings = load_embeddings(EMB_PATH)
-    reducer = UMAP(n_neighbors=20, n_components=5, min_dist=0.01)
+    reducer = UMAP(n_neighbors=20, n_components=3, min_dist=0.01)
     reduce_emb = reducer.fit_transform(embeddings)
     silhouette_scores = get_silhouette_scores(K, reduce_emb)
     best_k = get_best_k(K, silhouette_scores)
@@ -54,6 +56,8 @@ def main():
                         algorithm='lloyd')
     best_model = best_model.fit(reduce_emb)
     signature = infer_signature(reduce_emb, best_model.predict(reduce_emb))
+    
+    # start mlflow run
     with mlflow.start_run(run_name='best_KMeans'):
         mlflow.log_params(best_model.get_params())
         mlflow.sklearn.log_model(
@@ -61,12 +65,22 @@ def main():
             artifact_path="KMeans_model",
             registered_model_name="KMeans_model",
             signature=signature)
-        reducer_path = os.path.join(ROOT_DIR,
-                                    'files',
-                                    'pkl',
-                                    'umap_proj.pkl')
-        with open(reducer_path, "wb") as f:
-            joblib.dump(reduce_emb, f)
+    
+    df = pd.read_pickle(SAMPLE_PATH)
+    titles = df['title'].to_list()
+    arxiv_ids = df['arxiv_id'].to_list()
+    df_cluster = pd.DataFrame({
+        "arxiv_id": arxiv_ids,
+        "title": titles,
+        "x": reduce_emb[:, 0],
+        "y": reduce_emb[:, 1],
+        "z": reduce_emb[:, 2],
+    })
+    reducer_path = os.path.join(ROOT_DIR,
+                                'files',
+                                'pkl',
+                                'cluster_data.pkl')
+    df_cluster.to_pickle(reducer_path, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 if __name__ == '__main__':
