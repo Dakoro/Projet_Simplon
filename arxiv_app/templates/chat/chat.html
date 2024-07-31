@@ -8,7 +8,18 @@
          id="chatbox">
         {% for message in messages %}
         <div class="mt-4">User: {{ message.user_message }}</div>
-        <div class="mt-4"div>Bot: {{ message.bot_message }}</div>
+        <div class="mt-4">Bot: {{ message.bot_message }}</div>
+        <div class="rating">
+            <!-- Thumbs up -->
+            <div class="like grow">
+              <i class="fa fa-thumbs-up fa-3x like" aria-hidden="true"></i>
+            </div>
+            <!-- Thumbs down -->
+            <div class="dislike grow">
+              <i class="fa fa-thumbs-down fa-3x like" aria-hidden="true"></i>
+            </div>
+          </div>
+        <div class="mt-4">Score: {{ message.rag_score }}</div>
         {% endfor %}
     </div>
 
@@ -26,12 +37,11 @@
         </div>
     </form>
     {% if request.method == 'POST' %}
-        <div class="docs">
+        <div class="docs grid grid-cols-3 gap-4">
             {% for image in images %}
                 <a href="{{ image.0 }}" target="_blank">
-                    <h2>{{ image.1 }}</h2>
+                    <img src="data:image/png;base64, {{ image.2 }}" title="{{ image.1 }}" alt="doc image">
                 </a>
-                <img src="data:image/png;base64, {{ image.2 }}" alt="">
             {% endfor %}
         </div>
     {% endif %}
