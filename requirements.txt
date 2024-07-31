@@ -5,7 +5,6 @@ Django
 numpy
 pandas
 sentence-transformers
-pytest
 qdrant-client
 arxiv
 python-dotenv

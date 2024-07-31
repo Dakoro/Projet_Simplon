@@ -19,4 +19,7 @@ python -m venv env && source env/bin/activate
 ```sh
 pip install -r requirements.txt
 ```
+
+### Notes
+- check docs folder for documention on apis and application
  

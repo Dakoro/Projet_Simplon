@@ -22,6 +22,9 @@ topic_modeling:
 clustering:
 	python scripts/experiments/clustering.py
 
+load-qdrant:
+	python scripts/bdd/load_qdrant.py
+
 api_data: 
 	cd api/data && uvicorn main:app --reload --port 8081
 

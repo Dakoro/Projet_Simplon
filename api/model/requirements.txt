@@ -17,4 +17,5 @@ openai
 qdrant_client
 mlflow
 langchain
+langchain_community
 psutil
