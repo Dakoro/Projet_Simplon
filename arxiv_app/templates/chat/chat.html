@@ -11,12 +11,16 @@
         <div class="mt-4">Bot: {{ message.bot_message }}</div>
         <div class="rating">
             <!-- Thumbs up -->
-            <div class="like grow">
-              <i class="fa fa-thumbs-up fa-3x like" aria-hidden="true"></i>
+            <div class="like grow inline-block">
+                <button class= type="button" id="likeButton{{ forloop.counter }}">
+                    <i class="fa fa-thumbs-up like" aria-hidden="true"></i>
+                </button>
             </div>
             <!-- Thumbs down -->
-            <div class="dislike grow">
-              <i class="fa fa-thumbs-down fa-3x like" aria-hidden="true"></i>
+            <div class="dislike grow inline-block">
+                <button type="button" id="dislikeButton{{ forloop.counter }}">
+                    <i class="fa fa-thumbs-down like inline-block" aria-hidden="true"></i>
+                </button>
             </div>
           </div>
         <div class="mt-4">Score: {{ message.rag_score }}</div>
@@ -46,4 +50,7 @@
         </div>
     {% endif %}
 </div>
+<script>
+    let dislikeButton = document
+</script>
 {% endblock content %}
