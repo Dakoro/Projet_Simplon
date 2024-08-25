@@ -10,7 +10,7 @@ MLFLOW_URI = os.getenv('MLFLOW_TRACKING_URI')
 
 mlflow.set_tracking_uri(uri=MLFLOW_URI)
 model_name = "KMeans_model"
-model_version = 1
+model_version = 4
 
 loaded_model = mlflow.pyfunc.load_model(model_uri=f"models:/{model_name}/{model_version}")
 
@@ -18,5 +18,6 @@ loaded_model = mlflow.pyfunc.load_model(model_uri=f"models:/{model_name}/{model_
 def get_cluster_data():
     path = os.path.join(ROOT_DIR, 'files', 'pkl', 'clustering_data.pkl')
     df = pd.read_pickle(path)
-    df['cluster'] = df['reduced_emb'].apply(loaded_model.predict)
+    reduce_emb = df[['x', 'y', "z"]].to_numpy()
+    df['cluster'] = loaded_model.predict(reduce_emb)
     return df
