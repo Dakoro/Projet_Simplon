@@ -62,7 +62,7 @@ async def create_user(data: UserAuth, db: Session = Depends(get_db)):
     if user is not None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User with this email already exist",
+            detail="User with this username already exist",
         )
     user = {
         "username": data.username,
@@ -73,7 +73,6 @@ async def create_user(data: UserAuth, db: Session = Depends(get_db)):
     db_user = models.User(
         id=user["id"], username=user["username"], password=user["password"]
     )
-    print(db_user)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
