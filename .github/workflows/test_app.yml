@@ -21,9 +21,9 @@ jobs:
 
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install -r arxiv_app/requirements.txt
-        pip install pytest
+        python -m pip install --no-cache-dir --upgrade pip
+        pip install --no-cache-dir -r arxiv_app/requirements.txt
+        pip install --no-cache-dir pytest
 
     - name: Run tests
       run: |
