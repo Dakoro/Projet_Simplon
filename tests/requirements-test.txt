@@ -2,4 +2,5 @@ pandas
 numpy
 scikit-learn
 umap-learn
+python-dotenv
 pytest

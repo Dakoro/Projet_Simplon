@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mlflow:
-        image: ghcr.io/dakoro/projet_simplon/mflow:latest
+        image: ghcr.io/dakoro/projet_simplon/mlflow:latest
         ports:
         - 8083:8083
 

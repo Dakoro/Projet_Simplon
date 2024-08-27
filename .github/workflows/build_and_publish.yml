@@ -25,4 +25,4 @@ jobs:
         with:
           context: docker/Dockerfile.mlflow
           push: true
-          tags: ghcr.io/Dakoro/Projet_Simplon/mlflow:latest
+          tags: ghcr.io/dakoro/projet_simplon/mlflow:latest
