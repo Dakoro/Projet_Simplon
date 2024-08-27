@@ -14,6 +14,9 @@ sample:
 embeddings:
 	python scripts/aggregation/get_embeddings.py
 
+test-embeddings:
+	python scripts/aggregation/get_test_embeddings.py
+
 topic_modeling:
 	pip install scipy==1.12.0
 	python scripts/experiments/topic_modeling.py
@@ -39,6 +42,9 @@ test-api-data:
 
 test-api-model:
 	cd api/model && pytest -vv
+
+test-app:
+	cd arxiv_app && pytest -vv
 
 remote-api-container:
 	docker compose -f .ci/docker-compose.yml up
