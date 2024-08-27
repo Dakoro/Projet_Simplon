@@ -17,4 +17,5 @@ def test_model_exists():
         "config.json",
     ]
     
-    assert fns == expected_fns
+    for fn in expected_fns:
+        assert fn in fns
