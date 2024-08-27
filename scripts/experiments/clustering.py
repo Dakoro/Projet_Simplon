@@ -58,13 +58,13 @@ def main():
     signature = infer_signature(reduce_emb, best_model.predict(reduce_emb))
     
     # start mlflow run
-    # with mlflow.start_run(run_name='best_KMeans'):
-    #     mlflow.log_params(best_model.get_params())
-    #     mlflow.sklearn.log_model(
-    #         sk_model=best_model,
-    #         artifact_path="KMeans_model",
-    #         registered_model_name="KMeans_model",
-    #         signature=signature)
+    with mlflow.start_run(run_name='best_KMeans'):
+        mlflow.log_params(best_model.get_params())
+        mlflow.sklearn.log_model(
+            sk_model=best_model,
+            artifact_path="KMeans_model",
+            registered_model_name="KMeans_model",
+            signature=signature)
     
     df = pd.read_pickle(SAMPLE_PATH)
     titles = df['title'].to_list()
