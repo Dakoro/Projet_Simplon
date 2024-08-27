@@ -21,9 +21,10 @@ jobs:
 
     - name: Install dependencies
       run: |
+        pip cache purge
         python -m pip install --no-cache-dir --upgrade pip
         pip install --no-cache-dir -r arxiv_app/requirements.txt
-        pip install --no-cache-dir pytest
+        pip install --no-cache-dir django-pytest
 
     - name: Run tests
       run: |
