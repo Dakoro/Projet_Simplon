@@ -1,7 +1,8 @@
-import pandas as pd
 import re
 import os
 import nltk
+import pickle
+import pandas as pd
 from nltk.corpus import stopwords
 
 nltk.download('stopwords')
@@ -19,9 +20,13 @@ def main():
     path = os.path.join(os.getcwd(), "files", "pkl", "aggreated_data.pkl")
     df = pd.read_pickle(path).sample(n=10000, random_state=42)
     df['abstract'] = df['abstract'].apply(process)
+    
     sample_fp = os.path.join(os.getcwd(), "files", "pkl", "sample.pkl")
-    df.to_pickle(sample_fp)
+    test_fp = os.path.join(os.getcwd(), "files", "pkl", "test_data.pkl")
+    df_test = df.sample(n=2000, random_state=42)
 
+    df.to_pickle(sample_fp, protocol=pickle.HIGHEST_PROTOCOL)
+    df_test.to_pickle(test_fp, protocol=pickle.HIGHEST_PROTOCOL)
 
 if __name__ == "__main__":
     main()
