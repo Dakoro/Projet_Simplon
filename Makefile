@@ -47,7 +47,7 @@ local-api-container:
 	docker compose -f .local/docker-compose.yml up
 
 local-qdrant:
-	docker run -p 6333:6333 -p 6334:6334 \
+	docker run -d -p 6333:6333 -p 6334:6334 \
     -v $(pwd)/qdrant_storage:/qdrant/storage:z \
     qdrant/qdrant
 

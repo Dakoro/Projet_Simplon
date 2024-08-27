@@ -83,7 +83,6 @@ def get_clustering(request):
         response = requests.get(clustring_url, headers=auth)
         data = response.json()
         df = pd.DataFrame.from_dict(data)
-        print(df)
         fig = px.scatter_3d(df,
                             x='proj_x',
                             y='proj_y',
