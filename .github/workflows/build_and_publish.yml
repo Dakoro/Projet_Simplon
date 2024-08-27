@@ -23,6 +23,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
-          context: docker/Dockerfile.mlflow
+          context: .
+          file: ./docker/Dockerfile.mlflow
           push: true
           tags: ghcr.io/dakoro/projet_simplon/mlflow:latest
