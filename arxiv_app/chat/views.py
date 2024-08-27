@@ -5,7 +5,7 @@ import plotly.express as px
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Message
-from .utils import get_coord, get_images, get_rag_score
+from .utils import get_rag_score
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -34,10 +34,6 @@ def chat(request):
             ai_res = data['openai']['choices'][0]['message']
             logprobs = data['openai']['choices'][0]['logprobs']['content']
             rag_score = get_rag_score(logprobs)
-            relevants_docs = data['relevants_docs']
-            coord_dict = get_coord(relevants_docs)
-            images = get_images(coord_dict)
-            context['images'] = images
             Message.objects.create(
                 user_message=question,
                 bot_message=ai_res['content'],

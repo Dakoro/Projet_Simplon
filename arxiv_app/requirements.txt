@@ -1,0 +1,13 @@
+setuptools
+wheel
+pandas
+numpy
+plotly
+requests
+Django
+django-tailwind
+django-tailwind[reload]
+nltk
+passlib
+python-dotenv
+

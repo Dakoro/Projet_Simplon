@@ -65,7 +65,7 @@ mlflow-server:
     -p 8083
 
 run_app:
-	cd arxiv_app && python manage.py runserver
+	cd arxiv_app && python manage.py runserver 0.0.0.0:8000
 
 docker-purge:
 	docker system prune --all --volumes

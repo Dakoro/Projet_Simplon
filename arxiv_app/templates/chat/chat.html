@@ -40,17 +40,7 @@
             </button>
         </div>
     </form>
-    {% if request.method == 'POST' %}
-        <div class="docs grid grid-cols-3 gap-4">
-            {% for image in images %}
-                <a href="{{ image.0 }}" target="_blank">
-                    <img src="data:image/png;base64, {{ image.2 }}" title="{{ image.1 }}" alt="doc image">
-                </a>
-            {% endfor %}
-        </div>
-    {% endif %}
 </div>
 <script>
-    let dislikeButton = document
 </script>
 {% endblock content %}
