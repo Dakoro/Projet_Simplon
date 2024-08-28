@@ -10,7 +10,7 @@ MLFLOW_URI = os.getenv('MLFLOW_TRACKING_URI')
 
 mlflow.set_tracking_uri(uri=MLFLOW_URI)
 model_name = "KMeans_model"
-model_version = 4
+model_version = 1
 
 loaded_model = mlflow.pyfunc.load_model(model_uri=f"models:/{model_name}/{model_version}")
 
