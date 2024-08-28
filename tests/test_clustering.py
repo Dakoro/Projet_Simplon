@@ -61,11 +61,9 @@ def test_train():
     })
     
     test_arxiv_ids = [
-        "1104.1724",
-        "2303.04696",
-        "1807.04888",
+        "2203.10465",
         "1904.08421",
-        "1311.1741"
+        "1807.04888",
     ]
     
     df_cluster['cluster'] = best_model.predict(df_cluster[['x', 'y', 'z']].to_numpy())
