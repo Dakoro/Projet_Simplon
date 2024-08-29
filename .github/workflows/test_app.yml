@@ -1,4 +1,4 @@
-name: Test Api Data
+name: Test Application
 
 on:
   push:
