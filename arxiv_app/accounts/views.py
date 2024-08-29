@@ -20,11 +20,8 @@ def register(request):
             form.save()
             username = form.cleaned_data.get("username")
             raw_password = form.cleaned_data.get("password1")
-            print(username)
-            print(raw_password)
             # login to app
             user = authenticate(username=username, password=raw_password)
-            print(user)
             if user is not None:
                 login(request, user)
 
