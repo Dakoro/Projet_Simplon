@@ -24,7 +24,6 @@ SQLALCHEMY_DATABASE_URL = f"sqlite:///{TEST_BDD_URI}"
 engine = sa.create_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
 )
-print(engine)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Set up the database once
