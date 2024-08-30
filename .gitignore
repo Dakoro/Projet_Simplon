@@ -178,8 +178,7 @@ api/data/test.db
 # images
 imgs
 
-# Tailwind 
-theme
+
 .cache_emb/BAAI
 files/pkl/aggreated_data.pkl
 files/pkl/embeddings.pkl
