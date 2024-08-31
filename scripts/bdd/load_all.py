@@ -13,7 +13,7 @@ def execute_python_script(fn: str):
     fp = os.path.join(ROOT_DIR, 'scripts', 'bdd', fn)
     try:
         subprocess.call(['python', fp])
-    except:
+    except Exception:
         subprocess.call(["python3", fp])
 
 
