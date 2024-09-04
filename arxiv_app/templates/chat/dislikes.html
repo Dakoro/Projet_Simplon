@@ -1,0 +1,9 @@
+<div class="dislike grow inline-block" id="dislikesarea{{ forloop.counter }}">
+  <button type="button"
+          hx-post="{% url 'dislike_msg' message.id %}"
+          hx-target="#dislikesarea{{ forloop.counter }}" hx-swap="outerHTML"
+          id="dislikeButton{{ forloop.counter }}">
+      <i class="fa fa-thumbs-down like inline-block" aria-hidden="true"></i>
+      {{ message.dislikes.count }} dislikes
+  </button>
+</div>

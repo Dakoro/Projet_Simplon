@@ -11,17 +11,9 @@
         <div class="mt-4">Bot: {{ message.bot_message }}</div>
         <div class="rating">
             <!-- Thumbs up -->
-            <div class="like grow inline-block">
-                <button class= type="button" id="likeButton{{ forloop.counter }}">
-                    <i class="fa fa-thumbs-up like" aria-hidden="true"></i>
-                </button>
-            </div>
+            {% include "chat/likes.html" %}
             <!-- Thumbs down -->
-            <div class="dislike grow inline-block">
-                <button type="button" id="dislikeButton{{ forloop.counter }}">
-                    <i class="fa fa-thumbs-down like inline-block" aria-hidden="true"></i>
-                </button>
-            </div>
+            {% include "chat/dislikes.html" %}
           </div>
         <div class="mt-4">Score: {{ message.rag_score }}</div>
         {% endfor %}
@@ -42,5 +34,8 @@
     </form>
 </div>
 <script>
+    document.body.addEventListener('htmx:configRequest', (e) => {
+      e.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+      })
 </script>
 {% endblock content %}

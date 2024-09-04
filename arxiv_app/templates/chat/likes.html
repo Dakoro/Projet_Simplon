@@ -1,0 +1,9 @@
+<div class="like grow inline-block" id="likesarea{{ forloop.counter }}">
+    <button type="button" 
+            hx-post="{% url 'like_msg' message.id %}"
+            hx-target="#likesarea{{ forloop.counter }}" hx-swap="outerHTML"
+            id="likeButton{{ forloop.counter }}">
+        <i class="fa fa-thumbs-up like" aria-hidden="true"></i>
+        {{ message.likes.count }} likes
+    </button>
+</div>
