@@ -8,4 +8,6 @@ class Message(models.Model):
     rag_score = models.FloatField(default=-1.0)
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name="user_like")
     dislikes = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name="user_dislike")
+    doc_urls = models.TextField(blank=True, null=True)
+    doc_titles = models.TextField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)

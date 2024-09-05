@@ -4,7 +4,6 @@ import tempfile
 import mlflow
 import pandas as pd
 import plotly.express as px
-from mlflow.data.pandas_dataset import PandasDataset
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Message
@@ -30,6 +29,13 @@ def set_api_auth(request):
     return auth
 
 
+def url_from_path(path):
+    idx = path.split("/")[-1]
+    if "_" in idx:
+        idx = "/".join(idx.split("_"))
+    url = f"https://arxiv.org/pdf/{idx}"
+    return url
+
 @login_required
 def chat(request):
     context = {}
@@ -39,13 +45,19 @@ def chat(request):
         rag_res = requests.post(RAG_URL, params={"question": question}, headers=auth)
         if rag_res.status_code == 200:
             data = rag_res.json()
+            relevant_docs = data['relevants_docs']
+            pdf_fps =[doc['metadata']['file_path'] for doc in relevant_docs]
+            pdf_urls = "; ".join([url_from_path(fp) for fp in pdf_fps])
+            pdf_titles = "; ".join([doc['metadata']['paper_title'] for doc in relevant_docs])
             ai_res = data['openai']['choices'][0]['message']
             logprobs = data['openai']['choices'][0]['logprobs']['content']
             rag_score = get_rag_score(logprobs)
             Message.objects.create(
                 user_message=question,
                 bot_message=ai_res['content'],
-                rag_score=rag_score)
+                rag_score=rag_score,
+                doc_urls = pdf_urls,
+                doc_titles = pdf_titles)
         else:
             print(f"error, Status code: {rag_res.status_code}")
     messages = Message.objects.all()

@@ -16,6 +16,11 @@
             {% include "chat/dislikes.html" %}
           </div>
         <div class="mt-4">Score: {{ message.rag_score }}</div>
+        {% for item in message.doc_urls|split_zip:message.doc_titles %}
+        Url: <a href={{ item.0 | safe }} 
+               target="_blank" 
+               class="text-red-500 underline">{{ item.1 | safe }}</a><br>
+        {% endfor %}
         {% endfor %}
     </div>
 
