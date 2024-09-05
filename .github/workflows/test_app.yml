@@ -25,6 +25,7 @@ jobs:
         python -m pip install --no-cache-dir --upgrade pip
         pip install --no-cache-dir -r arxiv_app/requirements.txt
         pip install --no-cache-dir pytest-django
+        python scripts/nltk_download.py
 
     - name: Run tests
       run: |
