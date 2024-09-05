@@ -1,14 +1,11 @@
 import pytest
 import sqlalchemy as sa
 from fastapi.testclient import TestClient
-from httpx import Client, WSGITransport
 from sqlalchemy.orm import sessionmaker
-from uuid import uuid4
 from models import User, Paper, Author
 
 from database import Base
 from main import app, get_db
-from utils import get_hashed_password
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 
