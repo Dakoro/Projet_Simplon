@@ -10,4 +10,5 @@ django-tailwind[reload]
 nltk
 passlib
 python-dotenv
+mlflow
 

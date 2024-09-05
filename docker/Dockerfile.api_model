@@ -8,7 +8,6 @@ WORKDIR /
 COPY ../api/model ./api/model
 COPY ../models ./models
 COPY ../files/pkl ./files/pkl
-COPY ../.env .
 COPY ../Makefile .
 
 RUN pip install --no-cache-dir --upgrade -r ../api/model/requirements.txt
