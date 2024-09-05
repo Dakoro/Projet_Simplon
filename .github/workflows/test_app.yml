@@ -9,6 +9,22 @@ jobs:
   test:
     name: Run Tests for Arxiv Application
     runs-on: ubuntu-latest
+    services:
+      mlflow:
+        image: ghcr.io/dakoro/projet_simplon/mlflow:latest
+        ports:
+        - 8083:8083
+      api_model:
+        image: ghcr.io/dakoro/projet_simplon/api_model:latest
+        env:
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          JWT_REFRESH_SECRET_KEY: ${{ secrets.JWT_REFRESH_SECRET_KEY }}
+          OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
+          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+          QDRANT_URI: ${{ secrets.QDRANT_URI }}
+          QDRANT_API_KEY: ${{ secrets.QDRANT_API_KEY }}
+        ports:
+        - 8080:8082
 
     steps:
     - name: Checkout code
@@ -27,7 +43,11 @@ jobs:
         pip install --no-cache-dir pytest-django
         python scripts/nltk_download.py
 
+
     - name: Run tests
+      env:
+        API_MODEL_URL: "http://localhost:8082"
+        MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
       run: |
         make test-app
     
