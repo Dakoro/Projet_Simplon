@@ -41,6 +41,9 @@ jobs:
         QDRANT_API_KEY: ${{ secrets.QDRANT_API_KEY }}
       run: |
         make test-api-model
+
+    - name: Checkout repository
+        uses: actions/checkout@v3
     
     - name: Log in to the Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9

@@ -1,3 +1,0 @@
-function handleFeedback() {
-    return 
-}
